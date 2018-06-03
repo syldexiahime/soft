@@ -11,9 +11,10 @@ typedef enum {
 typedef struct {
 	short running;
 	int pc;
-	int r[NUM_REGS];
+	long r[NUM_REGS];
 } VM;
 
 typedef struct {
-	int instr, r1, r2, r3, imm;
+	unsigned char instr;
+	int args[5];
 } Command;
