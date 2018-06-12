@@ -1,99 +1,76 @@
 #include <stdio.h>
+#include <stdint.h>
 
 #include "soft-vm.h"
 
-VM create_vm() {
-	VM vm;
+soft_VM create_vm() {
+	soft_VM vm;
 	vm.running = 1;
 	vm.pc = 0;
 	for (int i = 0; i < NUM_REGS; i ++) {
-		vm.r[i] = 0;
+		vm.r[i].i = 0;
 	}
 
 	return vm;
 }
 
-char program[] = {
-	0x02, 0x00, 0x00, 0x64,
-	0x02, 0x01, 0x00, 0xc8,
-	0x03, 0x02, 0x00, 0x01,
-	0x02, 0x03, 0x00, 0x20,
-	0x04, 0x00, 0x02, 0x03,
-	0x00,
+soft_instr program[] = {
+	{ load_float,    0x00, 0x00, 0x00000000004293f5c3 },
+	{ load_float,    0x00, 0x01, 0x000000000041bb3333 },
+	{ add_float_reg, 0x00, 0x01, 0x000000000000000000 },
+	{ add_float_imm, 0x00, 0x00, 0x000000000041bb3333 }
 };
 
-int fetch(VM *vm) {
-	return program[vm->pc++];
-}
+void soft_vm_execute_instr(soft_VM *vm, soft_instr instr) {
+	switch (instr.opcode) {
+		case halt: vm->running = 0; break;
+		case noop: break;
 
-Command decode(VM *vm, unsigned char instr) {
-	Command cmd;
+		case load_int:   vm->r[instr.dst].i = instr.imm; break;
+		case load_float: vm->r[instr.dst].f = *(float*)&instr.imm; break;
 
-	cmd.instr = instr;
+		case add_int_reg: vm->r[instr.dst].i += vm->r[instr.src].i; break;
+		case sub_int_reg: vm->r[instr.dst].i -= vm->r[instr.src].i; break;
+		case mul_int_reg: vm->r[instr.dst].i *= vm->r[instr.src].i; break;
+		case div_int_reg: vm->r[instr.dst].i /= vm->r[instr.src].i; break;
+		case add_int_imm: vm->r[instr.dst].i += instr.imm; break;
+		case sub_int_imm: vm->r[instr.dst].i -= instr.imm; break;
+		case mul_int_imm: vm->r[instr.dst].i *= instr.imm; break;
+		case div_int_imm: vm->r[instr.dst].i /= instr.imm; break;
 
-	switch (cmd.instr) {
-		case hlt:
-		case nop:
-		case ldi:
-			cmd.args[0] = fetch(vm);
-			cmd.args[1] = (fetch(vm) << 8) | fetch(vm);
-			break;
-		case add:
-		case sub:
-			cmd.args[0] = fetch(vm);
-			cmd.args[1] = fetch(vm);
-			cmd.args[2] = fetch(vm);
-			break;
-		default:
-			break;
-	}
+		case add_float_reg: vm->r[instr.dst].f += vm->r[instr.src].f; break;
+		case sub_float_reg: vm->r[instr.dst].f -= vm->r[instr.src].f; break;
+		case mul_float_reg: vm->r[instr.dst].f *= vm->r[instr.src].f; break;
+		case div_float_reg: vm->r[instr.dst].f /= vm->r[instr.src].f; break;
+		case add_float_imm: vm->r[instr.dst].f += *(float*)&instr.imm; break;
+		case sub_float_imm: vm->r[instr.dst].f -= *(float*)&instr.imm; break;
+		case mul_float_imm: vm->r[instr.dst].f *= *(float*)&instr.imm; break;
+		case div_float_imm: vm->r[instr.dst].f /= *(float*)&instr.imm; break;
 
-	printf("Cmd: %d", cmd.instr);
-	for (int i = 0; i < 5; i++) {
-		printf(" %d", cmd.args[i]);
-	}
-	printf("\n");
-
-	return cmd;
-}
-
-void execute(VM *vm, Command cmd) {
-	switch (cmd.instr) {
-		case hlt:
-			vm->running = 0;
-			break;
-		case nop:
-			break;
-		case ldi:
-			vm->r[cmd.args[0]] = cmd.args[1];
-			break;
-		case add:
-			vm->r[cmd.args[0]] = vm->r[cmd.args[1]] + vm->r[cmd.args[2]];
-			break;
-		case sub:
-			vm->r[cmd.args[0]] = vm->r[cmd.args[1]] - vm->r[cmd.args[2]];
-			break;
 		default:
 			break;
 	}
 }
 
-void show_registers(VM *vm) {
+void show_registers(soft_VM *vm) {
+	printf("Instruction: %d\n", vm->pc);
 	printf("R: ");
 	for (int i = 0; i < NUM_REGS; i++) {
-		printf("0x%04lX ", vm->r[i]);
-		printf("(%ld) ", vm->r[i]);
+		printf("0x%04f ", vm->r[i].f);
+		printf("(%f) ", vm->r[i].f);
 	}
 	printf("\n");
 }
 
 int main(int argc, char **argv) {
-	VM vm;
+	soft_VM vm;
 	vm = create_vm();
 
 	while (vm.running == 1) {
-		execute(&vm, decode(&vm, fetch(&vm)));
 		show_registers(&vm);
+		soft_vm_execute_instr(&vm, program[vm.pc++]);
+		show_registers(&vm);
+		printf("\n");
 	}
 
 	printf("--------\n");
