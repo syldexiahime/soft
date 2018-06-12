@@ -1,5 +1,5 @@
 pipeline:
   build:
-    image: gcc:latest
+    image: syldexia/alpine-clang:latest
     commands:
       - make
