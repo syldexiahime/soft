@@ -1,46 +1,37 @@
-#define NUM_REGS 4
+#define NUM_REGS 8
 
 typedef enum {
-	halt,
-	noop,
+	noop = 0x0F,
+	halt = 0x00,
 
-	load_int,
-	load_float,
+	soft_load = 0x10,
 
-	add_int_reg,
-	sub_int_reg,
-	mul_int_reg,
-	div_int_reg,
-	add_int_imm,
-	sub_int_imm,
-	mul_int_imm,
-	div_int_imm,
-
-	add_float_reg,
-	sub_float_reg,
-	mul_float_reg,
-	div_float_reg,
-	add_float_imm,
-	sub_float_imm,
-	mul_float_imm,
-	div_float_imm
+	soft_add = 0x20,
+	soft_sub,
+	soft_mul,
+	soft_div,
 } soft_INSTRUCTION_SET;
 
-union Data {
-	int i;
-	long l;
-	float f;
+typedef enum {
+	soft_int32_t  = 0x10,
+	soft_float_t = 0x20,
+} soft_DATATYPES;
+
+union SoftData {
+	int32_t soft_int32;
+	float   soft_float;
 };
 
 typedef struct {
-	short running;
+	uint8_t running;
 	int pc;
-	union Data r[NUM_REGS];
+	union SoftData r[NUM_REGS];
 } soft_VM;
 
 typedef struct {
-	uint8_t opcode;
+	uint16_t opcode : 8;
+	uint16_t datatype : 8;
 	uint8_t src : 4;
 	uint8_t dst : 4;
-	uint64_t imm;
+	union SoftData imm;
 } soft_instr;
