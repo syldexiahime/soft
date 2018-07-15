@@ -1,4 +1,11 @@
 pipeline:
+  test:
+    image: syldexia/alpine-clang:latest
+    pull: true
+    commands:
+      - apk --no-cache add cmocka cmocka-dev
+      - make test
+
   build:
     image: syldexia/alpine-clang:latest
     pull: true
