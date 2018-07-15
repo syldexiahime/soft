@@ -46,12 +46,6 @@ union SoftData {
 };
 
 typedef struct {
-	boolean running;
-	int pc;
-	union SoftData r[SOFT_VM_NUM_REGS];
-} soft_VM;
-
-typedef struct {
 	uint16_t opcode : 8;
 	uint16_t datatype : 8;
 	uint8_t src : 4;
@@ -59,9 +53,18 @@ typedef struct {
 	union SoftData imm;
 } soft_instr;
 
-soft_VM create_VM();
+typedef struct {
+	boolean running;
+	int pc;
+	union SoftData r[SOFT_VM_NUM_REGS];
+	soft_instr *program;
+} soft_VM;
+
+void soft_vm_init_vm(soft_VM *vm);
+void soft_vm_load_program(soft_VM *vm, soft_instr *new_program);
 void soft_vm_execute_instr(soft_VM *vm, soft_instr instr);
-void show_registers(soft_VM *vm);
-void run_vm();
+void soft_vm_show_registers(soft_VM *vm);
+void soft_vm_run_vm(soft_VM *vm);
+void soft_vm_run_vm_debug(soft_VM *vm);
 
 #endif // SOFT_VM_H
