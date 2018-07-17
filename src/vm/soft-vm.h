@@ -21,18 +21,26 @@ switch(instr.datatype) { \
 #define SOFT_VM_MUL(vm, instr, soft_type_t) vm->r[instr.dst].soft_type_t *= SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
 #define SOFT_VM_DIV(vm, instr, soft_type_t) vm->r[instr.dst].soft_type_t /= SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
 
+#define SOFT_VM_CMP(vm, instr, op)   vm->zf = vm->r[instr.dst].soft_int32 op SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
+
 #define SOFT_VM_NUM_REGS 8
 
 typedef enum {
 	noop = 0x0F,
 	halt = 0x00,
 
-	soft_load = 0x10,
+	soft_instr_load = 0x10,
 
-	soft_add = 0x20,
-	soft_sub,
-	soft_mul,
-	soft_div,
+	soft_instr_add = 0x20,
+	soft_instr_sub,
+	soft_instr_mul,
+	soft_instr_div,
+
+	soft_instr_eq = 0x30,
+	soft_instr_gt,
+	soft_instr_lt,
+	soft_instr_gteq,
+	soft_instr_lteq,
 } soft_INSTRUCTION_SET;
 
 typedef enum {
@@ -57,6 +65,7 @@ typedef struct {
 	boolean running;
 	int pc;
 	union SoftData r[SOFT_VM_NUM_REGS];
+	boolean zf;
 	soft_instr *program;
 } soft_VM;
 
