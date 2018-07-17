@@ -36,6 +36,13 @@ void soft_vm_decode_instr(soft_VM *vm, soft_instr instr)
 		case soft_instr_gteq: SOFT_VM_EXECUTE_INSTR(vm, instr, COMPARISON, >=); break;
 		case soft_instr_lteq: SOFT_VM_EXECUTE_INSTR(vm, instr, COMPARISON, <=); break;
 
+		case soft_instr_and:    SOFT_VM_EXECUTE_INSTR(vm, instr, BINARY, &);  break;
+		case soft_instr_or:     SOFT_VM_EXECUTE_INSTR(vm, instr, BINARY, |);  break;
+		case soft_instr_xor:    SOFT_VM_EXECUTE_INSTR(vm, instr, BINARY, ^);  break;
+		case soft_instr_lshift: SOFT_VM_EXECUTE_INSTR(vm, instr, BINARY, <<); break;
+		case soft_instr_rshift: SOFT_VM_EXECUTE_INSTR(vm, instr, BINARY, >>); break;
+		case soft_instr_not:    SOFT_VM_EXECUTE_INSTR(vm, instr, BWNOT,);     break;
+
 		default: assert(false); break;
 	}
 }

@@ -1,10 +1,10 @@
+#ifndef SOFT_VM_H
+#define SOFT_VM_H
+
 #include <stdio.h>
 #include <stdint.h>
 
 #include "soft.h"
-
-#ifndef SOFT_VM_H
-#define SOFT_VM_H
 
 #define SOFT_VM_NUM_REGS 8
 
@@ -13,6 +13,8 @@
 #define _SOFT_VM_LOAD(vm, instr, soft_type_t, _) vm->r[instr.dst].soft_type_t = instr.imm.soft_type_t
 #define _SOFT_VM_ARITHMETIC(vm, instr, soft_type_t, op) vm->r[instr.dst].soft_type_t op##= _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
 #define _SOFT_VM_COMPARISON(vm, instr, soft_type_t, op) vm->zf = vm->r[instr.dst].soft_type_t op _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
+#define _SOFT_VM_BINARY(vm, instr, _, op) vm->r[instr.dst].soft_int32 = vm->r[instr.dst].soft_int32 op _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
+#define _SOFT_VM_BWNOT(vm, instr, soft_type_t, _) vm->r[instr.dst].soft_int32 = ~ _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
 
 #define SOFT_VM_EXECUTE_INSTR(vm, instr, operation, op) \
 switch(instr.datatype) { \
@@ -36,6 +38,13 @@ typedef enum {
 	soft_instr_lt,
 	soft_instr_gteq,
 	soft_instr_lteq,
+
+	soft_instr_and = 0x40,
+	soft_instr_or,
+	soft_instr_not,
+	soft_instr_xor,
+	soft_instr_lshift,
+	soft_instr_rshift,
 } soft_INSTRUCTION_SET;
 
 typedef enum {
