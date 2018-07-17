@@ -1,4 +1,10 @@
 pipeline:
+  lint:
+    image: syldexia/alpine-clang:latest
+    pull: true
+    commands:
+      - make lint
+
   test:
     image: syldexia/alpine-clang:latest
     pull: true
