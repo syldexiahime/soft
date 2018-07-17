@@ -8,6 +8,7 @@ void soft_vm_init_vm(soft_VM *vm)
 	for (int i = 0; i < SOFT_VM_NUM_REGS; i ++) {
 		vm->r[i].soft_int32 = 0;
 	}
+	vm->zf = false;
 }
 
 void soft_vm_load_program(soft_VM *vm, soft_instr *new_program)
@@ -22,12 +23,18 @@ void soft_vm_decode_instr(soft_VM *vm, soft_instr instr)
 		case halt: vm->running = false; break;
 		case noop: break;
 
-		case soft_load: SOFT_VM_EXECUTE_INSTR(vm, instr, LOAD) break;
+		case soft_instr_load: SOFT_VM_EXECUTE_INSTR(vm, instr, LOAD) break;
 
-		case soft_add: SOFT_VM_EXECUTE_INSTR(vm, instr, ADD); break;
-		case soft_sub: SOFT_VM_EXECUTE_INSTR(vm, instr, SUB); break;
-		case soft_mul: SOFT_VM_EXECUTE_INSTR(vm, instr, MUL); break;
-		case soft_div: SOFT_VM_EXECUTE_INSTR(vm, instr, DIV); break;
+		case soft_instr_add: SOFT_VM_EXECUTE_INSTR(vm, instr, ADD); break;
+		case soft_instr_sub: SOFT_VM_EXECUTE_INSTR(vm, instr, SUB); break;
+		case soft_instr_mul: SOFT_VM_EXECUTE_INSTR(vm, instr, MUL); break;
+		case soft_instr_div: SOFT_VM_EXECUTE_INSTR(vm, instr, DIV); break;
+
+		case soft_instr_eq:   SOFT_VM_CMP(vm, instr, ==); break;
+		case soft_instr_gt:   SOFT_VM_CMP(vm, instr, >);  break;
+		case soft_instr_lt:   SOFT_VM_CMP(vm, instr, <);  break;
+		case soft_instr_gteq: SOFT_VM_CMP(vm, instr, >=); break;
+		case soft_instr_lteq: SOFT_VM_CMP(vm, instr, <=); break;
 
 		default: assert(false); break;
 	}
