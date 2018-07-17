@@ -6,24 +6,19 @@
 #ifndef SOFT_VM_H
 #define SOFT_VM_H
 
-#define SOFT_VM_GET_INSTR_VALUE(vm, instr) (instr.src == noop ? instr.imm : vm->r[instr.src])
-
-#define SOFT_VM_EXECUTE_INSTR(vm, instr, operation) \
-switch(instr.datatype) { \
-	case soft_int32_t: SOFT_VM_##operation(vm, instr, soft_int32); break; \
-	case soft_float_t: SOFT_VM_##operation(vm, instr, soft_float); break; \
-}
-
-#define SOFT_VM_LOAD(vm, instr, soft_type_t) vm->r[instr.dst].soft_type_t = instr.imm.soft_type_t
-
-#define SOFT_VM_ADD(vm, instr, soft_type_t) vm->r[instr.dst].soft_type_t += SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
-#define SOFT_VM_SUB(vm, instr, soft_type_t) vm->r[instr.dst].soft_type_t -= SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
-#define SOFT_VM_MUL(vm, instr, soft_type_t) vm->r[instr.dst].soft_type_t *= SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
-#define SOFT_VM_DIV(vm, instr, soft_type_t) vm->r[instr.dst].soft_type_t /= SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
-
-#define SOFT_VM_CMP(vm, instr, op)   vm->zf = vm->r[instr.dst].soft_int32 op SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
-
 #define SOFT_VM_NUM_REGS 8
+
+#define _SOFT_VM_GET_INSTR_VALUE(vm, instr) (instr.src == noop ? instr.imm : vm->r[instr.src])
+
+#define _SOFT_VM_LOAD(vm, instr, soft_type_t, _) vm->r[instr.dst].soft_type_t = instr.imm.soft_type_t
+#define _SOFT_VM_ARITHMETIC(vm, instr, soft_type_t, op) vm->r[instr.dst].soft_type_t op##= _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
+#define _SOFT_VM_COMPARISON(vm, instr, soft_type_t, op) vm->zf = vm->r[instr.dst].soft_type_t op _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
+
+#define SOFT_VM_EXECUTE_INSTR(vm, instr, operation, op) \
+switch(instr.datatype) { \
+	case soft_int32_t: _SOFT_VM_##operation(vm, instr, soft_int32, op); break; \
+	case soft_float_t: _SOFT_VM_##operation(vm, instr, soft_float, op); break; \
+}
 
 typedef enum {
 	noop = 0x0F,
