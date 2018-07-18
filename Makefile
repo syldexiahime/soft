@@ -8,8 +8,9 @@ MAIN = src/soft.c
 SRC_FILES = src/**/*.c
 
 TEST_MAIN = tests/soft-test.c
+TEST_FILES = tests/**/*.c
 TEST_LIBS = -lcmocka
-TEST_HEADER_DIRS = -I'test'
+TEST_HEADER_DIRS = -I'tests'
 
 LINT_FLAGS = -fsyntax-only -Wall -Wextra
 
@@ -17,7 +18,7 @@ all:
 	${CC} ${MAIN} ${SRC_FILES} ${CC_FLAGS} ${HEADER_DIRS} -o soft
 
 test:
-	${CC} ${TEST_MAIN} ${SRC_FILES} ${CC_FLAGS} \
+	${CC} ${TEST_MAIN} ${SRC_FILES} ${TEST_FILES} ${CC_FLAGS} \
 	${HEADER_DIRS} ${TEST_HEADER_DIRS} ${TEST_FLAGS} ${TEST_LIBS} \
 	 -o soft-tests
 	./soft-tests
