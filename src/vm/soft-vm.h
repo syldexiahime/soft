@@ -1,51 +1,13 @@
-#ifndef SOFT_VM_H
-#define SOFT_VM_H
+#ifndef _SOFT_VM_H
+#define _SOFT_VM_H
 
 #include <stdio.h>
 #include <stdint.h>
 
+#include "vm/opcodes.h"
 #include "soft.h"
 
 #define SOFT_VM_NUM_REGS 8
-
-#define _SOFT_VM_GET_INSTR_VALUE(vm, instr) (instr.src == noop ? instr.imm : vm->r[instr.src])
-
-#define _SOFT_VM_LOAD(vm, instr, soft_type_t, _) vm->r[instr.dst].soft_type_t = instr.imm.soft_type_t
-#define _SOFT_VM_ARITHMETIC(vm, instr, soft_type_t, op) vm->r[instr.dst].soft_type_t op##= _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
-#define _SOFT_VM_COMPARISON(vm, instr, soft_type_t, op) vm->zf = vm->r[instr.dst].soft_type_t op _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
-#define _SOFT_VM_BINARY(vm, instr, _, op) vm->r[instr.dst].soft_int32 = vm->r[instr.dst].soft_int32 op _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
-#define _SOFT_VM_BWNOT(vm, instr, soft_type_t, _) vm->r[instr.dst].soft_int32 = ~ _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
-
-#define SOFT_VM_EXECUTE_INSTR(vm, instr, operation, op) \
-switch(instr.datatype) { \
-	case soft_int32_t: _SOFT_VM_##operation(vm, instr, soft_int32, op); break; \
-	case soft_float_t: _SOFT_VM_##operation(vm, instr, soft_float, op); break; \
-}
-
-typedef enum {
-	noop = 0x0F,
-	halt = 0x00,
-
-	soft_instr_load = 0x10,
-
-	soft_instr_add = 0x20,
-	soft_instr_sub,
-	soft_instr_mul,
-	soft_instr_div,
-
-	soft_instr_eq = 0x30,
-	soft_instr_gt,
-	soft_instr_lt,
-	soft_instr_gteq,
-	soft_instr_lteq,
-
-	soft_instr_and = 0x40,
-	soft_instr_or,
-	soft_instr_not,
-	soft_instr_xor,
-	soft_instr_lshift,
-	soft_instr_rshift,
-} soft_INSTRUCTION_SET;
 
 typedef enum {
 	soft_int32_t  = 0x10,
@@ -75,8 +37,6 @@ typedef struct {
 
 void soft_vm_init_vm(soft_VM *vm);
 void soft_vm_load_program(soft_VM *vm, soft_instr *new_program);
-void soft_vm_execute_instr(soft_VM *vm, soft_instr instr);
-void soft_vm_show_registers(soft_VM *vm);
 void soft_vm_run_vm(soft_VM *vm);
 void soft_vm_run_vm_debug(soft_VM *vm);
 

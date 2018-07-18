@@ -1,5 +1,5 @@
-#ifndef SOFT_H
-#define SOFT_H
+#ifndef _SOFT_H
+#define _SOFT_H
 
 #include <stdint.h>
 
