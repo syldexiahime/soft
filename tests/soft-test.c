@@ -13,9 +13,22 @@ int main(void) {
         cmocka_unit_test(soft_vm_test_load_float),
 
         cmocka_unit_test(soft_vm_test_add_int32_reg),
-        cmocka_unit_test(soft_vm_test_add_int32_imm),
+        cmocka_unit_test(soft_vm_test_sub_int32_reg),
+        cmocka_unit_test(soft_vm_test_mul_int32_reg),
+        cmocka_unit_test(soft_vm_test_div_int32_reg),
         cmocka_unit_test(soft_vm_test_add_float_reg),
+        cmocka_unit_test(soft_vm_test_sub_float_reg),
+        cmocka_unit_test(soft_vm_test_mul_float_reg),
+        cmocka_unit_test(soft_vm_test_div_float_reg),
+
+        cmocka_unit_test(soft_vm_test_add_int32_imm),
+        cmocka_unit_test(soft_vm_test_sub_int32_imm),
+        cmocka_unit_test(soft_vm_test_mul_int32_imm),
+        cmocka_unit_test(soft_vm_test_div_int32_imm),
         cmocka_unit_test(soft_vm_test_add_float_imm),
+        cmocka_unit_test(soft_vm_test_sub_float_imm),
+        cmocka_unit_test(soft_vm_test_mul_float_imm),
+        cmocka_unit_test(soft_vm_test_div_float_imm),
 
 		cmocka_unit_test(soft_vm_test_eq_reg_int32),
 
