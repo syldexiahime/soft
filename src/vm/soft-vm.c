@@ -3,11 +3,20 @@
 
 #define _SOFT_VM_GET_INSTR_VALUE(vm, instr) (instr.src == noop ? instr.imm : vm->r[instr.src])
 
-#define _SOFT_VM_LOAD(vm, instr, soft_type_t, _) vm->r[instr.dst].soft_type_t = instr.imm.soft_type_t
-#define _SOFT_VM_ARITHMETIC(vm, instr, soft_type_t, op) vm->r[instr.dst].soft_type_t op##= _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
-#define _SOFT_VM_COMPARISON(vm, instr, soft_type_t, op) vm->zf = vm->r[instr.dst].soft_type_t op _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
-#define _SOFT_VM_BINARY(vm, instr, _, op) vm->r[instr.dst].soft_int32 = vm->r[instr.dst].soft_int32 op _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
-#define _SOFT_VM_BWNOT(vm, instr, soft_type_t, _) vm->r[instr.dst].soft_int32 = ~ _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
+#define _SOFT_VM_LOAD(vm, instr, soft_type_t, _) \
+	vm->r[instr.dst].soft_type_t = instr.imm.soft_type_t
+
+#define _SOFT_VM_ARITHMETIC(vm, instr, soft_type_t, op) \
+	vm->r[instr.dst].soft_type_t op##= _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
+
+#define _SOFT_VM_COMPARISON(vm, instr, soft_type_t, op) \
+	vm->zf = vm->r[instr.dst].soft_type_t op _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
+
+#define _SOFT_VM_BINARY(vm, instr, _, op) \
+	vm->r[instr.dst].soft_int32 op##= _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
+
+#define _SOFT_VM_BWNOT(vm, instr, soft_type_t, _) \
+	vm->r[instr.dst].soft_int32 = ~ _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
 
 #define SOFT_VM_EXECUTE_INSTR(vm, instr, operation, op) \
 switch(instr.datatype) { \

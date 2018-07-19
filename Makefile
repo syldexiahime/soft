@@ -11,6 +11,7 @@ TEST_MAIN = tests/soft-test.c
 TEST_FILES = tests/**/*.c
 TEST_LIBS = -lcmocka
 TEST_HEADER_DIRS = -I'tests'
+# TEST_FLAGS = -fprofile-arcs -ftest-coverage
 
 LINT_FLAGS = -fsyntax-only -Wall -Wextra
 
