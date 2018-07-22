@@ -24,6 +24,10 @@ typedef enum {
 	soft_instr_xor,
 	soft_instr_lshift,
 	soft_instr_rshift,
+
+	soft_instr_jmp = 0x50,
+	soft_instr_jmpz,
+	soft_instr_jmpnz,
 } soft_INSTRUCTION_SET;
 
 #endif // _SOFT_VM_OPCODES_H

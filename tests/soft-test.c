@@ -40,6 +40,10 @@ int main(void) {
 		REGISTER_UNIT_TEST_SUITE(lt),
 		REGISTER_UNIT_TEST_SUITE(gteq),
 		REGISTER_UNIT_TEST_SUITE(lteq),
+
+		cmocka_unit_test(soft_vm_test_jmp),
+		cmocka_unit_test(soft_vm_test_jmpz),
+		cmocka_unit_test(soft_vm_test_jmpnz),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
