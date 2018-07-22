@@ -116,4 +116,12 @@ SOFT_VM_COMPARISON_TEST_FUNCTION_DEFINITION(lt)
 SOFT_VM_COMPARISON_TEST_FUNCTION_DEFINITION(gteq)
 SOFT_VM_COMPARISON_TEST_FUNCTION_DEFINITION(lteq)
 
+/**
+ * Jump instruction tests
+ * */
+
+void soft_vm_test_jmp(void **state);
+void soft_vm_test_jmpz(void **state);
+void soft_vm_test_jmpnz(void **state);
+
 #endif // _SOFT_VM_TEST_H
