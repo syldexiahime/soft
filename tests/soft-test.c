@@ -7,32 +7,29 @@
 #include "soft.h"
 #include "vm/vm-test.h"
 
+#define REGISTER_UNIT_TEST_SUITE(instr) \
+	cmocka_unit_test(soft_vm_test_##instr##_int32_reg), \
+	cmocka_unit_test(soft_vm_test_##instr##_int32_imm), \
+	cmocka_unit_test(soft_vm_test_##instr##_float_reg), \
+	cmocka_unit_test(soft_vm_test_##instr##_float_imm)
+
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(soft_vm_test_load_int32),
         cmocka_unit_test(soft_vm_test_load_float),
 
-        cmocka_unit_test(soft_vm_test_add_int32_reg),
-        cmocka_unit_test(soft_vm_test_sub_int32_reg),
-        cmocka_unit_test(soft_vm_test_mul_int32_reg),
-        cmocka_unit_test(soft_vm_test_div_int32_reg),
-        cmocka_unit_test(soft_vm_test_add_float_reg),
-        cmocka_unit_test(soft_vm_test_sub_float_reg),
-        cmocka_unit_test(soft_vm_test_mul_float_reg),
-        cmocka_unit_test(soft_vm_test_div_float_reg),
+		REGISTER_UNIT_TEST_SUITE(add),
+		REGISTER_UNIT_TEST_SUITE(sub),
+		REGISTER_UNIT_TEST_SUITE(mul),
+		REGISTER_UNIT_TEST_SUITE(div),
 
-        cmocka_unit_test(soft_vm_test_add_int32_imm),
-        cmocka_unit_test(soft_vm_test_sub_int32_imm),
-        cmocka_unit_test(soft_vm_test_mul_int32_imm),
-        cmocka_unit_test(soft_vm_test_div_int32_imm),
-        cmocka_unit_test(soft_vm_test_add_float_imm),
-        cmocka_unit_test(soft_vm_test_sub_float_imm),
-        cmocka_unit_test(soft_vm_test_mul_float_imm),
-        cmocka_unit_test(soft_vm_test_div_float_imm),
+		cmocka_unit_test(soft_vm_test_and_int32_reg),
+		cmocka_unit_test(soft_vm_test_or_int32_reg),
+		cmocka_unit_test(soft_vm_test_xor_int32_reg),
+		cmocka_unit_test(soft_vm_test_lshift_int32_reg),
+		cmocka_unit_test(soft_vm_test_rshift_int32_reg),
 
 		cmocka_unit_test(soft_vm_test_eq_reg_int32),
-
-		cmocka_unit_test(soft_vm_test_and_float_reg),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
