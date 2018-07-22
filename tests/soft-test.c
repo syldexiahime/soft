@@ -29,7 +29,17 @@ int main(void) {
 		cmocka_unit_test(soft_vm_test_lshift_int32_reg),
 		cmocka_unit_test(soft_vm_test_rshift_int32_reg),
 
-		cmocka_unit_test(soft_vm_test_eq_reg_int32),
+		cmocka_unit_test(soft_vm_test_and_int32_imm),
+		cmocka_unit_test(soft_vm_test_or_int32_imm),
+		cmocka_unit_test(soft_vm_test_xor_int32_imm),
+		cmocka_unit_test(soft_vm_test_lshift_int32_imm),
+		cmocka_unit_test(soft_vm_test_rshift_int32_imm),
+
+		REGISTER_UNIT_TEST_SUITE(eq),
+		REGISTER_UNIT_TEST_SUITE(gt),
+		REGISTER_UNIT_TEST_SUITE(lt),
+		REGISTER_UNIT_TEST_SUITE(gteq),
+		REGISTER_UNIT_TEST_SUITE(lteq),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
