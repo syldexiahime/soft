@@ -10,9 +10,9 @@
 #define SOFT_VM_NUM_REGS 8
 
 typedef enum {
-	soft_ptr32_t = 0x00,
-	soft_int32_t = 0x10,
-	soft_float_t = 0x20,
+	soft_ptr32 = 0x00,
+	soft_int32 = 0x10,
+	soft_float = 0x20,
 } soft_DATATYPES;
 
 union SoftData {
@@ -20,6 +20,10 @@ union SoftData {
 	int32_t   soft_int32;
 	float     soft_float;
 };
+
+#define soft_ptr32_t uint32_t
+#define soft_int32_t int32_t
+#define soft_float_t float
 
 typedef struct {
 	uint16_t opcode : 8;

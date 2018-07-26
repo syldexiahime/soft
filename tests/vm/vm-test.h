@@ -32,16 +32,16 @@
 
 #define _SOFT_VM_TEST_SET_PROGRAM_reg(operation, soft_type, td1, td2) \
 	{ \
-		{ soft_instr_load, soft_##soft_type##_t,  noop,  0x1,  {td1.soft_int32} }, \
-		{ soft_instr_load, soft_##soft_type##_t,  noop,  0x2,  {td2.soft_int32} }, \
-		{ soft_instr_##operation,  soft_##soft_type##_t,  0x2,   0x1,  {noop} }, \
+		{ soft_instr_load, soft_##soft_type,  noop,  0x1,  {td1.soft_int32} }, \
+		{ soft_instr_load, soft_##soft_type,  noop,  0x2,  {td2.soft_int32} }, \
+		{ soft_instr_##operation,  soft_##soft_type,  0x2,   0x1,  {noop} }, \
 		{ halt,            noop,          noop,  noop, {noop} } \
 	};
 
 #define _SOFT_VM_TEST_SET_PROGRAM_imm(operation, soft_type, td1, td2) \
 	{ \
-		{ soft_instr_load, soft_##soft_type##_t,  noop,  0x1,  {td1.soft_int32} }, \
-		{ soft_instr_##operation, soft_##soft_type##_t,  noop,  0x1,  {td2.soft_int32} }, \
+		{ soft_instr_load, soft_##soft_type,  noop,  0x1,  {td1.soft_int32} }, \
+		{ soft_instr_##operation, soft_##soft_type,  noop,  0x1,  {td2.soft_int32} }, \
 		{ halt,            noop,          noop,  noop, {noop} } \
 	};
 
