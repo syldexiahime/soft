@@ -51,6 +51,9 @@ static void soft_vm_decode_instr(soft_VM *vm, soft_instr instr)
 		case soft_instr_jmpz:      SOFT_VM_EXECUTE_JMP_INSTR(vm, instr, JMPZ);      break;
 		case soft_instr_jmpnz:     SOFT_VM_EXECUTE_JMP_INSTR(vm, instr, JMPNZ);     break;
 
+		case soft_instr_castint32: SOFT_VM_EXECUTE_INSTR(vm, instr, CAST_INT32,);    break;
+		case soft_instr_castfloat: SOFT_VM_EXECUTE_INSTR(vm, instr, CAST_FLOAT,);    break;
+
 		default: assert(false); break;
 	}
 	vm->pc++;
