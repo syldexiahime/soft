@@ -28,6 +28,9 @@ typedef enum {
 	soft_instr_jmp = 0x50,
 	soft_instr_jmpz,
 	soft_instr_jmpnz,
+
+	soft_instr_castint32 = 0x60,
+	soft_instr_castfloat
 } soft_INSTRUCTION_SET;
 
 #endif // _SOFT_VM_OPCODES_H
