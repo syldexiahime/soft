@@ -31,6 +31,15 @@
 	vm->r[instr.dst].soft_int32 = ~ _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
 
 /**
+ * Typecast instructions
+ * */
+#define _SOFT_VM_CAST_INT32(vm, instr, soft_type_t, _) \
+	vm->r[instr.dst].soft_int32 = (soft_int32_t) vm->r[instr.src].soft_type_t
+
+#define _SOFT_VM_CAST_FLOAT(vm, instr, soft_type_t, _) \
+	vm->r[instr.dst].soft_int32 = (soft_float_t) vm->r[instr.src].soft_type_t
+
+/**
  * Jump instructions
  * */
 #define _SOFT_VM_JMP(vm, instr) \
