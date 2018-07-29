@@ -1,6 +1,7 @@
 #include <assert.h>
-#include "soft-vm.h"
-#include "instructions.h"
+#include "vm/soft-vm.h"
+#include "vm/instructions.h"
+#include "vm/syscalls.h"
 
 static void soft_vm_decode_instr(soft_VM *vm, soft_instr instr);
 static void soft_vm_show_registers(soft_VM *vm);
@@ -27,7 +28,9 @@ static void soft_vm_decode_instr(soft_VM *vm, soft_instr instr)
 		case halt: vm->running = false; break;
 		case noop: break;
 
-		case soft_instr_load:      SOFT_VM_EXECUTE_INSTR(vm, instr, LOAD,)           break;
+		case soft_instr_syscall:   soft_vm_syscall(vm, instr);                       break;
+
+		case soft_instr_load:      SOFT_VM_EXECUTE_INSTR(vm, instr, LOAD,);          break;
 
 		case soft_instr_add:       SOFT_VM_EXECUTE_INSTR(vm, instr, ARITHMETIC, +);  break;
 		case soft_instr_sub:       SOFT_VM_EXECUTE_INSTR(vm, instr, ARITHMETIC, -);  break;
@@ -47,9 +50,9 @@ static void soft_vm_decode_instr(soft_VM *vm, soft_instr instr)
 		case soft_instr_rshift:    SOFT_VM_EXECUTE_INSTR(vm, instr, BINARY, >>);     break;
 		case soft_instr_not:       SOFT_VM_EXECUTE_INSTR(vm, instr, BWNOT,);         break;
 
-		case soft_instr_jmp:       SOFT_VM_EXECUTE_JMP_INSTR(vm, instr, JMP);       break;
-		case soft_instr_jmpz:      SOFT_VM_EXECUTE_JMP_INSTR(vm, instr, JMPZ);      break;
-		case soft_instr_jmpnz:     SOFT_VM_EXECUTE_JMP_INSTR(vm, instr, JMPNZ);     break;
+		case soft_instr_jmp:       SOFT_VM_EXECUTE_JMP_INSTR(vm, instr, JMP);        break;
+		case soft_instr_jmpz:      SOFT_VM_EXECUTE_JMP_INSTR(vm, instr, JMPZ);       break;
+		case soft_instr_jmpnz:     SOFT_VM_EXECUTE_JMP_INSTR(vm, instr, JMPNZ);      break;
 
 		case soft_instr_castint32: SOFT_VM_EXECUTE_INSTR(vm, instr, CAST_INT32,);    break;
 		case soft_instr_castfloat: SOFT_VM_EXECUTE_INSTR(vm, instr, CAST_FLOAT,);    break;
