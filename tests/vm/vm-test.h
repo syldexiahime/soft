@@ -68,11 +68,16 @@ soft_VM vm;
  * */
 void soft_vm_test_load_int32(void **state);
 void soft_vm_test_load_float(void **state);
+void soft_vm_test_load_ptr(void **state);
 
-void soft_vm_test_mov_int32_imm(void **state);
-void soft_vm_test_mov_int32_reg(void **state);
-void soft_vm_test_mov_float_imm(void **state);
-void soft_vm_test_mov_float_reg(void **state);
+void soft_vm_test_mov_reg_int32_to_reg(void **state);
+void soft_vm_test_mov_reg_float_to_reg(void **state);
+void soft_vm_test_mov_reg_int32_to_addr(void **state);
+void soft_vm_test_mov_reg_float_to_addr(void **state);
+void soft_vm_test_mov_addr_int32_to_reg(void **state);
+void soft_vm_test_mov_addr_float_to_reg(void **state);
+void soft_vm_test_mov_addr_int32_to_addr(void **state);
+void soft_vm_test_mov_addr_float_to_addr(void **state);
 
 /**
  * Arithmetic instruction tests
@@ -89,6 +94,11 @@ SOFT_VM_ARITHMETIC_TEST_FUNCTION_DEFINITION(add)
 SOFT_VM_ARITHMETIC_TEST_FUNCTION_DEFINITION(sub)
 SOFT_VM_ARITHMETIC_TEST_FUNCTION_DEFINITION(mul)
 SOFT_VM_ARITHMETIC_TEST_FUNCTION_DEFINITION(div)
+
+void soft_vm_test_add_ptr_reg(void **state);
+void soft_vm_test_add_ptr_imm(void **state);
+void soft_vm_test_sub_ptr_imm(void **state);
+void soft_vm_test_sub_ptr_reg(void **state);
 
 
 /**

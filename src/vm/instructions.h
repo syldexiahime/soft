@@ -15,6 +15,8 @@ typedef struct {
  * Helpers
  * */
 #define _SOFT_VM_GET_INSTR_VALUE(vm, instr) (instr.src == noop ? instr.imm : vm->r[instr.src])
+#define xstr(a) str(a)
+#define str(a) #a
 
 /**
  * Load instructions
@@ -22,13 +24,23 @@ typedef struct {
 #define _SOFT_VM_LOAD(vm, instr, soft_type_t, _) \
 	vm->r[instr.dst].soft_type_t = instr.imm.soft_type_t
 
-#define _SOFT_VM_MOV(vm, instr, soft_type_t, _) \
+// If destination is empty, copy value to the address held in the immediate
+#define _SOFT_VM_MOV_REG(vm, instr, soft_type_t, _) \
 	if (instr.dst == noop) { \
-		printf("addr: %p (mov execute)\n", instr.imm.soft_ptr); \
 		*((soft_type_t##_t*) instr.imm.soft_ptr) = vm->r[instr.src].soft_type_t; \
 	} \
 	else { \
 		vm->r[instr.dst].soft_type_t = vm->r[instr.src].soft_type_t; \
+	}
+
+// If the destination is empty, copy the value from the address held in the src register to the address held in the immediate
+// Otherwise copy the value from the address held in the src register to the destination register
+#define _SOFT_VM_MOV_ADDR(vm, instr, soft_type_t, _) \
+	if (instr.dst == noop) { \
+		*((soft_type_t##_t*) instr.imm.soft_ptr) = *((soft_type_t##_t*) vm->r[instr.src].soft_ptr); \
+	} \
+	else { \
+		vm->r[instr.dst].soft_type_t = *((soft_type_t##_t*) vm->r[instr.src].soft_ptr); \
 	}
 
 /**
@@ -74,6 +86,38 @@ typedef struct {
 	if (vm->zf == false) { vm->pc = _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32; return; }
 
 /**
+ * Pointer function thingies
+ * */
+#define _SOFT_VM_PTR_LOAD(vm, instr, _) \
+	_SOFT_VM_LOAD(vm, instr, soft_ptr,)
+
+#define _SOFT_VM_PTR_MOV_REG(vm, instr, _) \
+	_SOFT_VM_MOV_REG(vm, instr, soft_ptr,)
+
+#define _SOFT_VM_PTR_MOV_ADDR(vm, instr, _) \
+	_SOFT_VM_MOV_ADDR(vm, instr, soft_ptr,)
+
+#define _SOFT_VM_PTR_ARITHMETIC(vm, instr, op) \
+	if ("*" == xstr(op) || "/" == xstr(op)) assert(false); \
+	if ("+" == xstr(op)) vm->r[instr.dst].soft_ptr += _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32; \
+	if ("-" == xstr(op)) vm->r[instr.dst].soft_ptr -= _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
+
+#define _SOFT_VM_PTR_COMPARISON(vm, instr, op) \
+	_SOFT_VM_COMPARISON(vm, instr, soft_ptr, op)
+
+#define _SOFT_VM_PTR_BINARY(vm, instr, op) \
+	assert(false);
+
+#define _SOFT_VM_PTR_BWNOT(vm, instr, op) \
+	assert(false);
+
+#define _SOFT_VM_PTR_CAST_INT32(vm, instr, _) \
+	assert(false);
+
+#define _SOFT_VM_PTR_CAST_FLOAT(vm, instr, _) \
+	assert(false);
+
+/**
  * Execution macros
  * */
 #define SOFT_VM_EXECUTE_JMP_INSTR(vm, instr, operation) \
@@ -81,10 +125,13 @@ typedef struct {
 
 #define SOFT_VM_EXECUTE_INSTR(vm, instr, operation, op) \
 	switch(instr.datatype) { \
+		case soft_ptr:   _SOFT_VM_PTR_##operation(vm, instr, op);         break; \
 		case soft_int32: _SOFT_VM_##operation(vm, instr, soft_int32, op); break; \
 		case soft_float: _SOFT_VM_##operation(vm, instr, soft_float, op); break; \
 \
 		default: assert(false); break; \
 	}
+
+// case soft_ptr:   _SOFT_VM_##operation(vm, instr, soft_ptr, op); break; \
 
 #endif // _SOFT_VM_INSTRUCTIONS_H

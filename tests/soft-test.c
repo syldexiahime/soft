@@ -24,15 +24,27 @@ int main(void) {
 		 * Virtual machine tests
 		 * */
 		#ifdef SOFT_VM_TESTS
+        cmocka_unit_test(soft_vm_test_load_ptr),
         cmocka_unit_test(soft_vm_test_load_int32),
         cmocka_unit_test(soft_vm_test_load_float),
 
-		REGISTER_VM_UNIT_TEST_SUITE(mov),
+		cmocka_unit_test(soft_vm_test_mov_reg_int32_to_reg),
+		cmocka_unit_test(soft_vm_test_mov_reg_int32_to_addr),
+		cmocka_unit_test(soft_vm_test_mov_reg_float_to_reg),
+		cmocka_unit_test(soft_vm_test_mov_reg_float_to_addr),
+		cmocka_unit_test(soft_vm_test_mov_addr_int32_to_reg),
+		cmocka_unit_test(soft_vm_test_mov_addr_float_to_reg),
+		cmocka_unit_test(soft_vm_test_mov_addr_int32_to_addr),
+		cmocka_unit_test(soft_vm_test_mov_addr_float_to_addr),
 
 		REGISTER_VM_UNIT_TEST_SUITE(add),
 		REGISTER_VM_UNIT_TEST_SUITE(sub),
 		REGISTER_VM_UNIT_TEST_SUITE(mul),
 		REGISTER_VM_UNIT_TEST_SUITE(div),
+		cmocka_unit_test(soft_vm_test_add_ptr_reg),
+		cmocka_unit_test(soft_vm_test_add_ptr_imm),
+		cmocka_unit_test(soft_vm_test_sub_ptr_reg),
+		cmocka_unit_test(soft_vm_test_sub_ptr_imm),
 
 		cmocka_unit_test(soft_vm_test_and_int32_reg),
 		cmocka_unit_test(soft_vm_test_or_int32_reg),

@@ -7,7 +7,8 @@ typedef enum {
 	soft_instr_syscall = 0x0F,
 
 	soft_instr_load = 0x10,
-	soft_instr_mov,
+	soft_instr_movreg,
+	soft_instr_movaddr,
 
 	soft_instr_add = 0x20,
 	soft_instr_sub,
