@@ -25,7 +25,7 @@ void soft_vm_test_mov_##type##_imm(void **state) \
 { \
 	union SoftData test_data, test_ptr; \
 	test_data.soft_##type = value; \
-	test_ptr.soft_ptr32 = malloc(sizeof(test_data)); \
+	test_ptr.soft_ptr = malloc(sizeof(test_data)); \
 	soft_instr test_program[] = { \
 		{ soft_instr_load, soft_int32,  noop,  0x1, test_data }, \
 		{ soft_instr_mov,  soft_int32,   0x1, noop, test_ptr }, \
@@ -35,7 +35,7 @@ void soft_vm_test_mov_##type##_imm(void **state) \
 	soft_vm_load_program(&vm, test_program); \
 	soft_vm_run_vm(&vm); \
 \
-	assert_true(test_data.soft_##type == *((soft_##type##_t*) test_ptr.soft_ptr32)); \
+	assert_true(test_data.soft_##type == *((soft_##type##_t*) test_ptr.soft_ptr)); \
 }
 
 #define SOFT_VM_MOV_TEST(type, value) \

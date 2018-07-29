@@ -1,3 +1,16 @@
+#ifndef _SOFT_VM_INSTRUCTIONS_H
+#define _SOFT_VM_INSTRUCTIONS_H
+
+#include "vm/datatypes.h"
+
+typedef struct {
+	uint16_t opcode : 8;
+	uint16_t datatype : 8;
+	uint8_t src : 4;
+	uint8_t dst : 4;
+	union SoftData imm;
+} soft_instr;
+
 /**
  * Helpers
  * */
@@ -11,8 +24,8 @@
 
 #define _SOFT_VM_MOV(vm, instr, soft_type_t, _) \
 	if (instr.dst == noop) { \
-		printf("addr: %p (mov execute)\n", instr.imm.soft_ptr32); \
-		*((soft_type_t##_t*) instr.imm.soft_ptr32) = vm->r[instr.src].soft_type_t; \
+		printf("addr: %p (mov execute)\n", instr.imm.soft_ptr); \
+		*((soft_type_t##_t*) instr.imm.soft_ptr) = vm->r[instr.src].soft_type_t; \
 	} \
 	else { \
 		vm->r[instr.dst].soft_type_t = vm->r[instr.src].soft_type_t; \
@@ -73,3 +86,5 @@
 \
 		default: assert(false); break; \
 	}
+
+#endif // _SOFT_VM_INSTRUCTIONS_H
