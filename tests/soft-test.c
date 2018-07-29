@@ -18,6 +18,8 @@ int main(void) {
         cmocka_unit_test(soft_vm_test_load_int32),
         cmocka_unit_test(soft_vm_test_load_float),
 
+		REGISTER_UNIT_TEST_SUITE(mov),
+
 		REGISTER_UNIT_TEST_SUITE(add),
 		REGISTER_UNIT_TEST_SUITE(sub),
 		REGISTER_UNIT_TEST_SUITE(mul),

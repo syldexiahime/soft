@@ -9,6 +9,15 @@
 #define _SOFT_VM_LOAD(vm, instr, soft_type_t, _) \
 	vm->r[instr.dst].soft_type_t = instr.imm.soft_type_t
 
+#define _SOFT_VM_MOV(vm, instr, soft_type_t, _) \
+	if (instr.dst == noop) { \
+		printf("addr: %p (mov execute)\n", instr.imm.soft_ptr32); \
+		*((soft_type_t##_t*) instr.imm.soft_ptr32) = vm->r[instr.src].soft_type_t; \
+	} \
+	else { \
+		vm->r[instr.dst].soft_type_t = vm->r[instr.src].soft_type_t; \
+	}
+
 /**
  * Arithmetic instructions
  * */
