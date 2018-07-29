@@ -31,6 +31,7 @@ static void soft_vm_decode_instr(soft_VM *vm, soft_instr instr)
 		case soft_instr_syscall:   soft_vm_syscall(vm, instr);                       break;
 
 		case soft_instr_load:      SOFT_VM_EXECUTE_INSTR(vm, instr, LOAD,);          break;
+		case soft_instr_mov:       SOFT_VM_EXECUTE_INSTR(vm, instr, MOV,);           break;
 
 		case soft_instr_add:       SOFT_VM_EXECUTE_INSTR(vm, instr, ARITHMETIC, +);  break;
 		case soft_instr_sub:       SOFT_VM_EXECUTE_INSTR(vm, instr, ARITHMETIC, -);  break;
