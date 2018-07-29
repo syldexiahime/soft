@@ -69,6 +69,11 @@ soft_VM vm;
 void soft_vm_test_load_int32(void **state);
 void soft_vm_test_load_float(void **state);
 
+void soft_vm_test_mov_int32_imm(void **state);
+void soft_vm_test_mov_int32_reg(void **state);
+void soft_vm_test_mov_float_imm(void **state);
+void soft_vm_test_mov_float_reg(void **state);
+
 /**
  * Arithmetic instruction tests
  * */
