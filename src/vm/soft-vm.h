@@ -16,14 +16,14 @@ typedef enum {
 } soft_DATATYPES;
 
 union SoftData {
-	uint32_t  soft_ptr32;
 	int32_t   soft_int32;
 	float     soft_float;
+	void*     soft_ptr32;
 };
 
-#define soft_ptr32_t uint32_t
 #define soft_int32_t int32_t
 #define soft_float_t float
+#define soft_ptr32_t void*
 
 typedef struct {
 	uint16_t opcode : 8;
