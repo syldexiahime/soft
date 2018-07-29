@@ -43,13 +43,13 @@
  * Jump instructions
  * */
 #define _SOFT_VM_JMP(vm, instr) \
-	vm->pc = _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_ptr32; return
+	vm->pc = _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32; return
 
 #define _SOFT_VM_JMPZ(vm, instr) \
-	if (vm->zf == true) { vm->pc = _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_ptr32; return; }
+	if (vm->zf == true) { vm->pc = _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32; return; }
 
 #define _SOFT_VM_JMPNZ(vm, instr) \
-	if (vm->zf == false) { vm->pc = _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_ptr32; return; }
+	if (vm->zf == false) { vm->pc = _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32; return; }
 
 /**
  * Execution macros
@@ -59,7 +59,6 @@
 
 #define SOFT_VM_EXECUTE_INSTR(vm, instr, operation, op) \
 	switch(instr.datatype) { \
-		case soft_ptr32: _SOFT_VM_##operation(vm, instr, soft_ptr32, op); break; \
 		case soft_int32: _SOFT_VM_##operation(vm, instr, soft_int32, op); break; \
 		case soft_float: _SOFT_VM_##operation(vm, instr, soft_float, op); break; \
 \

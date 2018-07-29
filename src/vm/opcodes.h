@@ -2,8 +2,9 @@
 #define _SOFT_VM_OPCODES_H
 
 typedef enum {
-	noop = 0x0F,
 	halt = 0x00,
+	noop = 0x0E,
+	soft_instr_syscall = 0x0F,
 
 	soft_instr_load = 0x10,
 
