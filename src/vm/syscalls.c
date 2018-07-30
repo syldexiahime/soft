@@ -1,5 +1,5 @@
-#include "vm/syscalls.h"
 #include "vm/soft-vm.h"
+#include "vm/syscalls.h"
 
 #include <stdlib.h>
 #include <unistd.h>

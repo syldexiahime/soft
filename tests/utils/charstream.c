@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #include "utils/util-test.h"
 #include "utils/charstream.h"
 
@@ -26,7 +28,7 @@ void soft_charstream_test_consume(void **state)
 
 void soft_charstream_test_eof(void **state)
 {
-	boolean eof;
+	bool eof;
 	char eof_test_string[] = "hi";
 	char consumed;
 	soft_charstream_init(&charstream, eof_test_string);

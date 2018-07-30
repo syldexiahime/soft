@@ -18,7 +18,7 @@ char soft_charstream_consume(soft_charstream *stream)
 	return stream->buffer[stream->index++];
 }
 
-boolean soft_charstream_eof(soft_charstream *stream)
+bool soft_charstream_eof(soft_charstream *stream)
 {
 	return stream->buffer[stream->index] == '\0';
 }

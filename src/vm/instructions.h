@@ -132,6 +132,4 @@ typedef struct {
 		default: assert(false); break; \
 	}
 
-// case soft_ptr:   _SOFT_VM_##operation(vm, instr, soft_ptr, op); break; \
-
 #endif // _SOFT_VM_INSTRUCTIONS_H
