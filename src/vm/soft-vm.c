@@ -1,4 +1,5 @@
 #include <assert.h>
+
 #include "vm/soft-vm.h"
 #include "vm/instructions.h"
 #include "vm/syscalls.h"
