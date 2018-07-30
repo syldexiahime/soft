@@ -1,8 +1,3 @@
-#include <stdarg.h>
-#include <stddef.h>
-#include <setjmp.h>
-#include <cmocka.h>
-
 #include "soft-test.h"
 #include "soft.h"
 #include "vm/vm-test.h"
