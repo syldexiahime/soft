@@ -1,6 +1,8 @@
 #ifndef _SOFT_VM_H
 #define _SOFT_VM_H
 
+#include <stdbool.h>
+
 #include "soft.h"
 #include "vm/opcodes.h"
 #include "vm/instructions.h"
@@ -9,10 +11,10 @@
 #define SOFT_VM_NUM_REGS 8
 
 typedef struct {
-	boolean running;
+	bool running;
 	int pc;
 	union SoftData r[SOFT_VM_NUM_REGS];
-	boolean zf;
+	bool zf;
 	soft_instr *program;
 } soft_VM;
 
