@@ -22,3 +22,8 @@ bool soft_charstream_eof(soft_charstream *stream)
 {
 	return stream->buffer[stream->index] == '\0';
 }
+
+bool soft_charstream_expect(soft_charstream *stream, bool (*eval_function)(char))
+{
+	return eval_function(soft_charstream_peek(stream));
+}
