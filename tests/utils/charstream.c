@@ -44,3 +44,19 @@ void soft_charstream_test_eof(void **state)
 	assert_true(soft_charstream_eof(&charstream));
 	assert_true(charstream.index == 2);
 }
+
+bool expect_e(char ch) { return ch == 'e'; }
+void soft_charstream_test_expect(void **state)
+{
+	bool expected;
+	soft_charstream_init(&charstream, test_string);
+
+	expected = soft_charstream_expect(&charstream, expect_e);
+	assert_false(expected);
+
+	soft_charstream_consume(&charstream);
+
+	expected = soft_charstream_expect(&charstream, expect_e);
+	assert_true(expected);
+
+}
