@@ -14,5 +14,6 @@ void soft_charstream_init(soft_charstream *stream, char *buffer);
 char soft_charstream_peek(soft_charstream *stream);
 char soft_charstream_consume(soft_charstream *stream);
 bool soft_charstream_eof(soft_charstream *stream);
+bool soft_charstream_expect(soft_charstream *stream, bool (*eval_function)(char));
 
 #endif // _SOFT_CHARSTREAM_H

@@ -68,6 +68,7 @@ int main(void) {
 		cmocka_unit_test(soft_charstream_test_peek),
 		cmocka_unit_test(soft_charstream_test_consume),
 		cmocka_unit_test(soft_charstream_test_eof),
+		cmocka_unit_test(soft_charstream_test_expect),
 		#endif
     };
 
