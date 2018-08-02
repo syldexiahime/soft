@@ -18,6 +18,11 @@ char soft_charstream_consume(soft_charstream *stream)
 	return stream->buffer[stream->index++];
 }
 
+void soft_charstream_skip(soft_charstream *stream)
+{
+	stream->index++;
+}
+
 bool soft_charstream_eof(soft_charstream *stream)
 {
 	return stream->buffer[stream->index] == '\0';
