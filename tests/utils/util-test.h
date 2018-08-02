@@ -9,5 +9,6 @@ void soft_charstream_test_consume(void **state);
 void soft_charstream_test_eof(void **state);
 void soft_charstream_test_expect(void **state);
 void soft_charstream_test_skip(void **state);
+void soft_charstream_test_read_while(void **state);
 
 #endif // _SOFT_UTILS_TEST_H
