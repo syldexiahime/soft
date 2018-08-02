@@ -1,4 +1,6 @@
 #include <stdbool.h>
+#include <ctype.h>
+#include <string.h>
 
 #include "utils/util-test.h"
 #include "utils/charstream.h"
@@ -68,4 +70,19 @@ void soft_charstream_test_skip(void **state)
 	peeked = soft_charstream_peek(&charstream);
 	soft_charstream_skip(&charstream);
 	assert_true(peeked != soft_charstream_peek(&charstream));
+}
+
+void soft_charstream_test_read_while(void **state)
+{
+	char * str;
+	char expected[] = "Hello";
+	soft_charstream_init(&charstream, test_string);
+
+	str = soft_charstream_read_while(&charstream, (bool (*)(char)) isnumber);
+	assert_true(strlen(str) == 0);
+
+	str = soft_charstream_read_while(&charstream, (bool (*)(char)) isalpha);
+	assert_true(strlen(str) != 0);
+	assert_true(strcmp(str, expected) == 0);
+	assert_false(strcmp(str, test_string) == 0);
 }
