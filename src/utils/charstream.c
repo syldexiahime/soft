@@ -1,56 +1,81 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "utils/charstream.h"
 
-void soft_charstream_init(soft_charstream *stream, char *buffer)
+soft_charstream * charstream;
+
+soft_charstream * soft_charstream_init(char * buffer)
 {
-	stream->buffer = buffer;
-	stream->index  = 0;
-	stream->line   = 0;
-	stream->column = 0;
+	if (!charstream) charstream = malloc(sizeof(soft_charstream));
+
+	charstream->buffer = buffer;
+	charstream->index  = 0;
+	charstream->line   = 0;
+	charstream->column = 0;
+
+	return charstream;
 }
 
-char soft_charstream_peek(soft_charstream *stream)
+void soft_charstream_skip()    {        charstream->index++;                           }
+char soft_charstream_peek()    { return charstream->buffer[charstream->index];         }
+char soft_charstream_consume() { return charstream->buffer[charstream->index++];       }
+bool soft_charstream_eof()     { return charstream->buffer[charstream->index] == '\0'; }
+
+bool soft_charstream_expect(bool (*eval_function)(char))
 {
-	return stream->buffer[stream->index];
+	return eval_function(soft_charstream_peek());
 }
 
-char soft_charstream_consume(soft_charstream *stream)
+bool soft_charstream_expect_at_pos(bool (*eval_function)(char, int), int index)
 {
-	return stream->buffer[stream->index++];
+	return eval_function(soft_charstream_peek(), index);
 }
 
-void soft_charstream_skip(soft_charstream *stream)
-{
-	stream->index++;
-}
-
-bool soft_charstream_eof(soft_charstream *stream)
-{
-	return stream->buffer[stream->index] == '\0';
-}
-
-bool soft_charstream_expect(soft_charstream *stream, bool (*eval_function)(char))
-{
-	return eval_function(soft_charstream_peek(stream));
-}
-
-char* soft_charstream_read_while(soft_charstream * charstream, bool (*eval_function)(char))
+char * soft_charstream_read_while(bool (*eval_function)(char))
 {
 	uint16_t size = 16;
 	char * buffer = malloc(size);
 	uint16_t index = 0;
 
-	while (soft_charstream_expect(charstream, eval_function) && index <= size) {
+	while (soft_charstream_expect(eval_function) && index <= size) {
 		if (index == size) {
 			size += 16;
 			buffer = (char *) realloc(buffer, size);
 		}
-		buffer[index] = soft_charstream_consume(charstream);
+		buffer[index] = soft_charstream_consume();
 		index++;
 	}
 	buffer[index] = '\0';
 
 	return buffer;
+}
+
+char * soft_charstream_read_whilei(bool (*eval_function)(char, int))
+{
+	uint16_t size = 16;
+	char * buffer = malloc(size);
+	uint16_t index = 0;
+
+	while (soft_charstream_expect_at_pos(eval_function, index) && index <= size) {
+		if (index == size) {
+			size += 16;
+			buffer = (char *) realloc(buffer, size);
+		}
+		buffer[index] = soft_charstream_consume();
+		index++;
+	}
+	buffer[index] = '\0';
+
+	return buffer;
+}
+
+char * soft_charstream_warn(char * filename, char * message)
+{
+	char * warnstr = malloc(sizeof(filename) + sizeof(message) + 32);
+
+	sprintf(warnstr, "%s:%d:%d: error: %s", filename, charstream->line, charstream->column, message);
+
+	return warnstr;
 }
