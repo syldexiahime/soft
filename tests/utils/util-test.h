@@ -2,6 +2,7 @@
 #define _SOFT_UTILS_TEST_H
 
 #include "soft-test.h"
+#include "utils/helpers.h"
 #include "utils/charstream.h"
 
 #include <stdbool.h>
