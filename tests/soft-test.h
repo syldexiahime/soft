@@ -4,6 +4,7 @@
 #include "soft.h"
 #include "vm/vm-test.h"
 #include "utils/util-test.h"
+#include "assembler/assembler-test.h"
 
 #include <stdarg.h>
 #include <stddef.h>
