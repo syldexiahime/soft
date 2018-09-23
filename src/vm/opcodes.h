@@ -1,7 +1,7 @@
 #ifndef _SOFT_VM_OPCODES_H
 #define _SOFT_VM_OPCODES_H
 
-typedef enum {
+enum soft_instruction_set {
 	halt = 0x00,
 	noop = 0x0E,
 	soft_instr_syscall = 0x0F,
@@ -34,6 +34,6 @@ typedef enum {
 
 	soft_instr_castint32 = 0x60,
 	soft_instr_castfloat
-} soft_INSTRUCTION_SET;
+};
 
 #endif // _SOFT_VM_OPCODES_H
