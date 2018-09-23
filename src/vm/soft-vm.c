@@ -1,13 +1,9 @@
-#include <assert.h>
-
 #include "vm/soft-vm.h"
-#include "vm/instructions.h"
-#include "vm/syscalls.h"
 
-static void soft_vm_decode_instr(soft_VM *vm, soft_instr instr);
-static void soft_vm_show_registers(soft_VM *vm);
+static void soft_vm_decode_instr(struct soft_vm * vm, struct soft_instr instr);
+static void soft_vm_show_registers(struct soft_vm * vm);
 
-void soft_vm_init_vm(soft_VM *vm)
+void soft_vm_init_vm(struct soft_vm * vm)
 {
 	vm->running = false;
 	vm->pc = 0;
@@ -17,13 +13,13 @@ void soft_vm_init_vm(soft_VM *vm)
 	vm->zf = false;
 }
 
-void soft_vm_load_program(soft_VM *vm, soft_instr *new_program)
+void soft_vm_load_program(struct soft_vm * vm, struct soft_instr * program)
 {
-	vm->program = new_program;
+	vm->program = program;
 	soft_vm_init_vm(vm);
 }
 
-static void soft_vm_decode_instr(soft_VM *vm, soft_instr instr)
+static void soft_vm_decode_instr(struct soft_vm * vm, struct soft_instr instr)
 {
 	switch (instr.opcode) {
 		case halt: vm->running = false; break;
@@ -65,7 +61,7 @@ static void soft_vm_decode_instr(soft_VM *vm, soft_instr instr)
 	vm->pc++;
 }
 
-static void soft_vm_show_registers(soft_VM *vm)
+static void soft_vm_show_registers(struct soft_vm * vm)
 {
 	printf("Instruction: %d\n", vm->pc);
 	printf("R: ");
@@ -76,7 +72,7 @@ static void soft_vm_show_registers(soft_VM *vm)
 	printf("\n");
 }
 
-void soft_vm_run_vm(soft_VM *vm)
+void soft_vm_run_vm(struct soft_vm * vm)
 {
 	vm->running = true;
 
@@ -85,7 +81,7 @@ void soft_vm_run_vm(soft_VM *vm)
 	}
 }
 
-void soft_vm_run_vm_debug(soft_VM *vm)
+void soft_vm_run_vm_debug(struct soft_vm * vm)
 {
 	vm->running = true;
 

@@ -1,7 +1,3 @@
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdio.h>
-
 #include "utils/charstream.h"
 
 soft_charstream * charstream;

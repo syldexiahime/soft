@@ -5,12 +5,12 @@
 void soft_vm_test_##operation##_##soft_type##_##source(void **state) \
 { \
 	_SOFT_VM_TEST_SET_TEST_DATA(d1, d2, soft_type, operator); \
-	soft_instr test_program[] = _SOFT_VM_TEST_SET_PROGRAM_##source(operation, soft_type, test_data_1, test_data_2) \
+	struct soft_instr test_program[] = _SOFT_VM_TEST_SET_PROGRAM_##source(operation, soft_type, test_data_1, test_data_2) \
 	_SOFT_VM_TEST_LOAD_AND_RUN(vm, test_program, debug); \
 \
 	assert_true((d1 operator d2) == vm.zf); \
 \
-	soft_instr test_program_2[] = _SOFT_VM_TEST_SET_PROGRAM_##source(operation, soft_type, test_data_1, test_data_1) \
+	struct soft_instr test_program_2[] = _SOFT_VM_TEST_SET_PROGRAM_##source(operation, soft_type, test_data_1, test_data_1) \
 	_SOFT_VM_TEST_LOAD_AND_RUN(vm, test_program_2, debug); \
 \
 	assert_true((d1 operator d1) == vm.zf); \

@@ -1,16 +1,7 @@
-#include "vm/soft-vm.h"
 #include "vm/syscalls.h"
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
- 
-/* Not technically required, but needed on some UNIX distributions */
-#include <sys/types.h>
-#include <sys/stat.h>
 
-
-void soft_vm_syscall(soft_VM *vm, soft_instr instr)
+void soft_vm_syscall(struct soft_vm * vm, struct soft_instr instr)
 {
 	switch (instr.imm.soft_int32) {
 

@@ -1,7 +1,4 @@
 #include "soft-test.h"
-#include "soft.h"
-#include "vm/vm-test.h"
-#include "utils/util-test.h"
 
 #define SOFT_VM_TESTS 1
 #define SOFT_UTILS_TESTS 1
