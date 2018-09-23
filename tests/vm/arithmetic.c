@@ -17,7 +17,7 @@ void soft_vm_test_add_ptr_reg(void **state)
 	test_ptr.soft_ptr = &test_ptr;
 	test_add.soft_int32 = 1;
 	void* res = test_ptr.soft_ptr + test_add.soft_int32;
-	soft_instr test_program[] = {
+	struct soft_instr test_program[] = {
 		{ soft_instr_load,   soft_ptr,    noop,  0x1, test_ptr },
 		{ soft_instr_load,   soft_int32,  noop,  0x2, test_add },
 		{ soft_instr_add,    soft_ptr,     0x2,  0x1, {noop} },
@@ -37,7 +37,7 @@ void soft_vm_test_add_ptr_imm(void **state)
 	test_ptr.soft_ptr = &test_ptr;
 	test_add.soft_int32 = 1;
 	void* res = test_ptr.soft_ptr + test_add.soft_int32;
-	soft_instr test_program[] = {
+	struct soft_instr test_program[] = {
 		{ soft_instr_load,   soft_ptr,    noop,  0x1, test_ptr },
 		{ soft_instr_add,    soft_ptr,    noop,  0x1, test_add },
 		{ halt,            noop,          noop, noop, {noop} }
@@ -56,7 +56,7 @@ void soft_vm_test_sub_ptr_reg(void **state)
 	test_ptr.soft_ptr = &test_ptr;
 	test_sub.soft_int32 = 1;
 	void* res = test_ptr.soft_ptr - test_sub.soft_int32;
-	soft_instr test_program[] = {
+	struct soft_instr test_program[] = {
 		{ soft_instr_load,   soft_ptr,    noop,  0x1, test_ptr },
 		{ soft_instr_load,   soft_int32,  noop,  0x2, test_sub },
 		{ soft_instr_sub,    soft_ptr,     0x2,  0x1, {noop} },
@@ -76,7 +76,7 @@ void soft_vm_test_sub_ptr_imm(void **state)
 	test_ptr.soft_ptr = &test_ptr;
 	test_sub.soft_int32 = 1;
 	void* res = test_ptr.soft_ptr - test_sub.soft_int32;
-	soft_instr test_program[] = {
+	struct soft_instr test_program[] = {
 		{ soft_instr_load,   soft_ptr,    noop,  0x1, test_ptr },
 		{ soft_instr_sub,    soft_ptr,    noop,  0x1, test_sub },
 		{ halt,            noop,          noop, noop, {noop} }
