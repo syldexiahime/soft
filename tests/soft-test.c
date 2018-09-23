@@ -2,6 +2,7 @@
 
 #define SOFT_VM_TESTS 1
 #define SOFT_UTILS_TESTS 1
+#define SOFT_ASM_TOKENIZER_TESTS 1
 
 #define REGISTER_VM_UNIT_TEST_SUITE(instr) \
 	cmocka_unit_test(soft_vm_test_##instr##_int32_reg), \
@@ -68,6 +69,16 @@ int main(void) {
 		cmocka_unit_test(soft_charstream_test_expect),
 		cmocka_unit_test(soft_charstream_test_skip),
 		cmocka_unit_test(soft_charstream_test_read_while),
+
+		cmocka_unit_test(soft_test_str_replace_at),
+		#endif
+
+		#ifdef SOFT_ASM_TOKENIZER_TESTS
+		cmocka_unit_test(soft_asm_tokenizer_test_read_section),
+		cmocka_unit_test(soft_asm_tokenizer_test_read_word),
+		cmocka_unit_test(soft_asm_tokenizer_test_read_number),
+		cmocka_unit_test(soft_asm_tokenizer_test_read_symbol),
+		cmocka_unit_test(soft_asm_tokenizer_test_skip_comment),
 		#endif
 	};
 
