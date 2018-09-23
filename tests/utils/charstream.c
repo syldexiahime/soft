@@ -1,11 +1,6 @@
-#include <stdbool.h>
-#include <ctype.h>
-#include <string.h>
-
 #include "utils/util-test.h"
-#include "utils/charstream.h"
 
-soft_charstream * charstream;
+struct soft_charstream * charstream;
 char test_string[] = "Hello World!";
 
 void soft_charstream_test_peek(void **state)
@@ -20,8 +15,14 @@ void soft_charstream_test_peek(void **state)
 void soft_charstream_test_consume(void **state)
 {
 	charstream = soft_charstream_init(test_string);
-	char consumed = soft_charstream_consume(&charstream);
-	char peeked = soft_charstream_peek(&charstream);
+
+	char peeked = soft_charstream_peek();
+
+	assert_true(peeked == 'H');
+	assert_true(charstream->index == 0);
+
+	char consumed = soft_charstream_consume();
+	     peeked   = soft_charstream_peek();
 
 	assert_true(consumed == 'H');
 	assert_true(peeked   == 'e');

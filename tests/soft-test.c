@@ -69,7 +69,7 @@ int main(void) {
 		cmocka_unit_test(soft_charstream_test_skip),
 		cmocka_unit_test(soft_charstream_test_read_while),
 		#endif
-    };
+	};
 
-    return cmocka_run_group_tests(tests, NULL, NULL);
+	return cmocka_run_group_tests(tests, NULL, NULL);
 }
