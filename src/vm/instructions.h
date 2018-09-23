@@ -3,13 +3,15 @@
 
 #include "vm/datatypes.h"
 
-typedef struct {
+#include <stdint.h>
+
+struct soft_instr {
 	uint16_t opcode : 8;
 	uint16_t datatype : 8;
 	uint8_t src : 4;
 	uint8_t dst : 4;
 	union SoftData imm;
-} soft_instr;
+};
 
 /**
  * Helpers
