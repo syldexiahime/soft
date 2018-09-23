@@ -6,7 +6,7 @@ void soft_vm_test_load_##type(void **state) \
 { \
 	union SoftData test_data; \
 	test_data.soft_##type = value; \
-	soft_instr test_program[] = { \
+	struct soft_instr test_program[] = { \
 		{ soft_instr_load, soft_##type,  noop,  0x1,  test_data }, \
 		{ halt,            noop,          noop,  noop, {noop} } \
 	}; \

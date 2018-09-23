@@ -1,6 +1,11 @@
 #ifndef _SOFT_CHARSTREAM_H
 #define _SOFT_CHARSTREAM_H
 
+#include <ctype.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 
 typedef struct {

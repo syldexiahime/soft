@@ -50,7 +50,7 @@ void soft_vm_test_##operation##_##soft_type##_##source(void **state) \
 { \
 	_SOFT_VM_TEST_SET_TEST_DATA(23, 47, soft_type, operator); \
 \
-	soft_instr test_program[] = _SOFT_VM_TEST_SET_PROGRAM_##source(operation, soft_type, test_data_1, test_data_2) \
+	struct soft_instr test_program[] = _SOFT_VM_TEST_SET_PROGRAM_##source(operation, soft_type, test_data_1, test_data_2) \
 \
 	_SOFT_VM_TEST_LOAD_AND_RUN(vm, test_program, debug); \
 \
@@ -61,7 +61,7 @@ void soft_vm_test_##operation##_##soft_type##_##source(void **state) \
 	_SOFT_VM_INSTR_TEST(operation, operator, soft_type, reg, debug); \
 	_SOFT_VM_INSTR_TEST(operation, operator, soft_type, imm, debug);
 
-soft_VM vm;
+struct soft_vm vm;
 
 /**
  * Load instruction tests
