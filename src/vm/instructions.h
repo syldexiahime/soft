@@ -16,18 +16,16 @@ struct soft_instr {
 /**
  * Helpers
  * */
-#define _SOFT_VM_GET_INSTR_VALUE(vm, instr) (instr.src == noop ? instr.imm : vm->r[instr.src])
-#define xstr(a) str(a)
-#define str(a) #a
+#define _soft_vm_get_instr_value() (instr.src == noop ? instr.imm : vm->r[instr.src])
 
 /**
  * Load instructions
  * */
-#define _SOFT_VM_LOAD(vm, instr, soft_type_t, _) \
+#define soft_vm_load(soft_type_t) \
 	vm->r[instr.dst].soft_type_t = instr.imm.soft_type_t
 
 // If destination is empty, copy value to the address held in the immediate
-#define _SOFT_VM_MOV_REG(vm, instr, soft_type_t, _) \
+#define soft_vm_mov_reg(soft_type_t) \
 	if (instr.dst == noop) { \
 		*((soft_type_t##_t*) instr.imm.soft_ptr) = vm->r[instr.src].soft_type_t; \
 	} \
@@ -37,7 +35,7 @@ struct soft_instr {
 
 // If the destination is empty, copy the value from the address held in the src register to the address held in the immediate
 // Otherwise copy the value from the address held in the src register to the destination register
-#define _SOFT_VM_MOV_ADDR(vm, instr, soft_type_t, _) \
+#define soft_vm_mov_addr(soft_type_t) \
 	if (instr.dst == noop) { \
 		*((soft_type_t##_t*) instr.imm.soft_ptr) = *((soft_type_t##_t*) vm->r[instr.src].soft_ptr); \
 	} \
@@ -48,90 +46,49 @@ struct soft_instr {
 /**
  * Arithmetic instructions
  * */
-#define _SOFT_VM_ARITHMETIC(vm, instr, soft_type_t, op) \
-	vm->r[instr.dst].soft_type_t op##= _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
+#define soft_vm_arithmetic(soft_type_t, op) \
+	vm->r[instr.dst].soft_type_t op##= _soft_vm_get_instr_value().soft_type_t
+
+#define soft_vm_ptr_arithmetic(op) \
+	vm->r[instr.dst].soft_ptr op##= _soft_vm_get_instr_value().soft_int32;
 
 /**
  * Equality instructions
  * */
-#define _SOFT_VM_COMPARISON(vm, instr, soft_type_t, op) \
-	vm->zf = vm->r[instr.dst].soft_type_t op _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_type_t
+#define soft_vm_comparison(soft_type_t, op) \
+	vm->zf = vm->r[instr.dst].soft_type_t op _soft_vm_get_instr_value().soft_type_t
 
 /**
  * Binary/Bitwise instructions
  * */
-#define _SOFT_VM_BINARY(vm, instr, _, op) \
-	vm->r[instr.dst].soft_int32 op##= _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
+#define soft_vm_binary(op) \
+	vm->r[instr.dst].soft_int32 op##= _soft_vm_get_instr_value().soft_int32
 
-#define _SOFT_VM_BWNOT(vm, instr, _, __) \
-	vm->r[instr.dst].soft_int32 = ~ _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
+#define soft_vm_not() \
+	vm->r[instr.dst].soft_int32 = ~ _soft_vm_get_instr_value().soft_int32
 
 /**
  * Typecast instructions
  * */
-#define _SOFT_VM_CAST_INT32(vm, instr, soft_type_t, _) \
+#define soft_vm_cast_ptr(soft_type_t) \
+	vm->r[instr.dst].soft_ptr = (soft_ptr_t) vm->r[instr.src].soft_type_t
+
+#define soft_vm_cast_int32(soft_type_t) \
 	vm->r[instr.dst].soft_int32 = (soft_int32_t) vm->r[instr.src].soft_type_t
 
-#define _SOFT_VM_CAST_FLOAT(vm, instr, soft_type_t, _) \
+#define soft_vm_cast_float(soft_type_t) \
 	vm->r[instr.dst].soft_int32 = (soft_float_t) vm->r[instr.src].soft_type_t
 
 /**
  * Jump instructions
  * */
-#define _SOFT_VM_JMP(vm, instr) \
-	vm->pc = _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32; return
+#define soft_vm_jmp() \
+	vm->pc = _soft_vm_get_instr_value().soft_int32; return
 
-#define _SOFT_VM_JMPZ(vm, instr) \
-	if (vm->zf == true) { vm->pc = _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32; return; }
+#define soft_vm_jmpz() \
+	if (vm->zf == true) { vm->pc = _soft_vm_get_instr_value().soft_int32; return; }
 
-#define _SOFT_VM_JMPNZ(vm, instr) \
-	if (vm->zf == false) { vm->pc = _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32; return; }
-
-/**
- * Pointer function thingies
- * */
-#define _SOFT_VM_PTR_LOAD(vm, instr, _) \
-	_SOFT_VM_LOAD(vm, instr, soft_ptr,)
-
-#define _SOFT_VM_PTR_MOV_REG(vm, instr, _) \
-	_SOFT_VM_MOV_REG(vm, instr, soft_ptr,)
-
-#define _SOFT_VM_PTR_MOV_ADDR(vm, instr, _) \
-	_SOFT_VM_MOV_ADDR(vm, instr, soft_ptr,)
-
-#define _SOFT_VM_PTR_ARITHMETIC(vm, instr, op) \
-	if ("*" == xstr(op) || "/" == xstr(op)) assert(false); \
-	if ("+" == xstr(op)) vm->r[instr.dst].soft_ptr += _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32; \
-	if ("-" == xstr(op)) vm->r[instr.dst].soft_ptr -= _SOFT_VM_GET_INSTR_VALUE(vm, instr).soft_int32
-
-#define _SOFT_VM_PTR_COMPARISON(vm, instr, op) \
-	_SOFT_VM_COMPARISON(vm, instr, soft_ptr, op)
-
-#define _SOFT_VM_PTR_BINARY(vm, instr, op) \
-	assert(false);
-
-#define _SOFT_VM_PTR_BWNOT(vm, instr, op) \
-	assert(false);
-
-#define _SOFT_VM_PTR_CAST_INT32(vm, instr, _) \
-	assert(false);
-
-#define _SOFT_VM_PTR_CAST_FLOAT(vm, instr, _) \
-	assert(false);
-
-/**
- * Execution macros
- * */
-#define SOFT_VM_EXECUTE_JMP_INSTR(vm, instr, operation) \
-		_SOFT_VM_##operation(vm, instr); break; \
-
-#define SOFT_VM_EXECUTE_INSTR(vm, instr, operation, op) \
-	switch(instr.datatype) { \
-		case soft_ptr:   _SOFT_VM_PTR_##operation(vm, instr, op);         break; \
-		case soft_int32: _SOFT_VM_##operation(vm, instr, soft_int32, op); break; \
-		case soft_float: _SOFT_VM_##operation(vm, instr, soft_float, op); break; \
-\
-		default: assert(false); break; \
-	}
+#define soft_vm_jmpnz() \
+	if (vm->zf == false) { vm->pc = _soft_vm_get_instr_value().soft_int32; return; }
 
 #endif // _SOFT_VM_INSTRUCTIONS_H

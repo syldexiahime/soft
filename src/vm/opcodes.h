@@ -2,38 +2,61 @@
 #define _SOFT_VM_OPCODES_H
 
 enum soft_instruction_set {
-	halt = 0x00,
-	noop = 0x0E,
-	soft_instr_syscall = 0x0F,
+	/**
+	 * Misc. instructions
+	 * */
+	halt,
+	noop,
+	soft_instr_syscall,
 
-	soft_instr_load = 0x10,
+	/**
+	 * Data instruction thingies
+	 * */
+	soft_instr_load,
 	soft_instr_movreg,
 	soft_instr_movaddr,
 
-	soft_instr_add = 0x20,
+	/**
+	 * Arithmetic instructions
+	 * */
+	soft_instr_add,
 	soft_instr_sub,
 	soft_instr_mul,
 	soft_instr_div,
 
-	soft_instr_eq = 0x30,
+	/**
+	 * Logical instructions
+	 * */
+	soft_instr_eq,
 	soft_instr_gt,
 	soft_instr_lt,
 	soft_instr_gteq,
 	soft_instr_lteq,
 
-	soft_instr_and = 0x40,
+	/**
+	 * Bitwise instructions
+	 * */
+	soft_instr_and,
 	soft_instr_or,
 	soft_instr_not,
 	soft_instr_xor,
 	soft_instr_lshift,
 	soft_instr_rshift,
 
-	soft_instr_jmp = 0x50,
+	/**
+	 * Jump instructions
+	 * */
+	soft_instr_jmp,
 	soft_instr_jmpz,
 	soft_instr_jmpnz,
 
-	soft_instr_castint32 = 0x60,
-	soft_instr_castfloat
+	/**
+	 * Cast instructions
+	 * */
+	soft_instr_castint32,
+	soft_instr_castfloat,
+
+	num_soft_instrs
 };
 
 #endif // _SOFT_VM_OPCODES_H
