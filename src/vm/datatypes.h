@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
-typedef enum {
-	soft_ptr = 0x00,
-	soft_int32 = 0x10,
-	soft_float = 0x20,
-} soft_DATATYPES;
+enum soft_datatypes {
+	soft_ptr,
+	soft_int32,
+	soft_float,
+};
 
 union SoftData {
 	int32_t   soft_int32;
