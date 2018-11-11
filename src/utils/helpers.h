@@ -8,6 +8,8 @@
 #include <assert.h>
 #include <ctype.h>
 
+#define bitwise_cast(type_to, type_from, value) \
+	((union { type_from from; type_to to; }) { value }.to)
 
 int   parse_int(char * s);
 int   parse_hex(char * s);

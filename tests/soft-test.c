@@ -71,6 +71,8 @@ int main(void) {
 		cmocka_unit_test(soft_charstream_test_read_while),
 
 		cmocka_unit_test(soft_test_str_replace_at),
+
+		cmocka_unit_test(soft_test_tagged_pointers),
 		#endif
 
 		#ifdef SOFT_ASM_TOKENIZER_TESTS
