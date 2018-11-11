@@ -72,6 +72,16 @@ int main(void) {
 
 		cmocka_unit_test(soft_test_str_replace_at),
 
+		cmocka_unit_test(soft_test_sval_null),
+		cmocka_unit_test(soft_test_sval_true),
+		cmocka_unit_test(soft_test_sval_false),
+		cmocka_unit_test(soft_test_sval_bool),
+		cmocka_unit_test(soft_test_sval_int),
+		cmocka_unit_test(soft_test_sval_double),
+		cmocka_unit_test(soft_test_sval_pointer),
+		cmocka_unit_test(soft_test_sval_string),
+		cmocka_unit_test(soft_test_sval_falsey),
+
 		cmocka_unit_test(soft_test_tagged_pointers),
 		#endif
 
