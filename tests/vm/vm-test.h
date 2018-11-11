@@ -64,6 +64,19 @@ void soft_vm_test_##operation##_##soft_type##_##source(void **state) \
 struct soft_vm vm;
 
 /**
+ * Sval tests
+ * */
+void soft_test_sval_null(void ** state);
+void soft_test_sval_true(void ** state);
+void soft_test_sval_false(void ** state);
+void soft_test_sval_bool(void ** state);
+void soft_test_sval_int(void ** state);
+void soft_test_sval_double(void ** state);
+void soft_test_sval_pointer(void ** state);
+void soft_test_sval_string(void ** state);
+void soft_test_sval_falsey(void ** state);
+
+/**
  * Load instruction tests
  * */
 void soft_vm_test_load_int32(void **state);
