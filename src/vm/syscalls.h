@@ -2,6 +2,8 @@
 #define _SOFT_VM_SYSCALLS_H
 
 #include "vm/soft-vm.h"
+#include "vm/sval.h"
+#include "vm/instructions.h"
 
 #include <stdlib.h>
 #include <unistd.h>
