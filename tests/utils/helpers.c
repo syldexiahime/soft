@@ -17,3 +17,13 @@ void soft_test_str_replace_at(void **state)
 	str = str_replace_at(str, "Wor", 6, 2);
 	assert_true(strcmp(str, "Hello World!") == 0);
 }
+
+void soft_test_numbers_to_str(void ** state)
+{
+	char * str;
+
+	assert_true(strcmp(int_to_str(345), "345") == 0);
+	assert_true(strcmp(float_to_str(23.45f), "23.450001") == 0);
+	assert_true(strcmp(double_to_str(23.45), "23.450000") == 0);
+}
+
