@@ -2,9 +2,6 @@
 
 enum SOFT_VM_REGISTERS _regs;
 
-static void soft_vm_decode_instr(struct soft_vm * vm, struct soft_instr instr);
-static void soft_vm_show_registers(struct soft_vm * vm);
-
 void soft_vm_init_vm(struct soft_vm * vm)
 {
 	for (int i = 0; i < SOFT_VM_NUM_REGS; i ++) {
@@ -19,17 +16,6 @@ void soft_vm_load_program(struct soft_vm * vm, struct soft_program * program)
 	vm->ds = program->datastore;
 	vm->instructions = program->instructions;
 	soft_vm_init_vm(vm);
-}
-
-static void soft_vm_show_registers(struct soft_vm * vm)
-{
-	printf("Instruction: %p\n", vm->ip);
-	printf("R: ");
-	for (int i = 0; i < SOFT_VM_NUM_REGS; i++) {
-		printf("0x%04X ", sval_to_int(vm->r[i]));
-		/* printf("(%f) ", vm->r[i]); */
-	}
-	printf("\n");
 }
 
 void soft_vm_run_vm(struct soft_vm * vm)
@@ -54,6 +40,28 @@ void soft_vm_run_vm(struct soft_vm * vm)
 
 	#define get_sval_from_instr(instr) \
 		(!instr.iflag ? vm->r[(uint8_t) instr.imm] : sval_from_bits((uint64_t) instr.imm));
+
+	#define softvm_dynamic_arithmetic(left, right, op) \
+		do { \
+\
+			if (sval_is_double(left)) \
+				vm->r[instr.dst] = sval_from_double(sval_to_double(left) op sval_cast_to_double(right)); \
+\
+			if (sval_is_int(left)) { \
+\
+				if (sval_is_double(right) \
+					|| (sval_is_string(right) && str_is_double(sval_to_string(right)))) \
+					vm->r[instr.dst] = sval_from_double(sval_cast_to_double(left) op sval_cast_to_double(right)); \
+				else \
+					vm->r[instr.dst] = sval_from_int(sval_to_int(left) op sval_cast_to_int(right)); \
+\
+			} \
+\
+			if (sval_is_string(left)) { \
+				/* Do Something */ \
+			} \
+\
+		} while (0)
 
 	struct soft_instr instr;
 	sval_t * ptr;
@@ -115,6 +123,26 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			vm->r[soft_rsp]  = sval_from_pointer(ptr--);
 			goto increment_pc;
 
+		/**
+		 * Dynamic Arithmetic
+		 * */
+
+		softvm_op(dadd)
+			softvm_dynamic_arithmetic(vm->r[instr.src], vm->r[instr.imm], +);
+			goto increment_pc;
+
+		softvm_op(dsub)
+			softvm_dynamic_arithmetic(vm->r[instr.src], vm->r[instr.imm], -);
+			goto increment_pc;
+
+		softvm_op(dmul)
+			softvm_dynamic_arithmetic(vm->r[instr.src], vm->r[instr.imm], *);
+			goto increment_pc;
+
+		softvm_op(ddiv)
+			softvm_dynamic_arithmetic(vm->r[instr.src], vm->r[instr.imm], /);
+			goto increment_pc;
+
 #ifndef SOFT_VM_USE_COMPUTED_GOTO
 
 	}
@@ -131,7 +159,3 @@ void soft_vm_run_vm(struct soft_vm * vm)
 		return;
 }
 
-void soft_vm_run_vm_debug(struct soft_vm * vm)
-{
-	return;
-}

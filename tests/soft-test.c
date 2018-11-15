@@ -16,6 +16,7 @@ int main(void) {
 
 		cmocka_unit_test(soft_test_str_replace_at),
 
+		cmocka_unit_test(soft_test_parse_numbers),
 		cmocka_unit_test(soft_test_numbers_to_str),
 
 		cmocka_unit_test(soft_test_tagged_pointers),
@@ -34,12 +35,15 @@ int main(void) {
 		cmocka_unit_test(soft_test_sval_pointer),
 		cmocka_unit_test(soft_test_sval_string),
 		cmocka_unit_test(soft_test_sval_falsey),
+		cmocka_unit_test(soft_test_sval_casts),
 
 		cmocka_unit_test(soft_vm_test_dloadi),
 		cmocka_unit_test(soft_vm_test_dload),
 		cmocka_unit_test(soft_vm_test_dstore),
 		cmocka_unit_test(soft_vm_test_dmovi),
 		cmocka_unit_test(soft_vm_test_dmov),
+
+		cmocka_unit_test(soft_vm_test_dadd),
 		#endif
 
 		#ifdef SOFT_ASM_TOKENIZER_TESTS
