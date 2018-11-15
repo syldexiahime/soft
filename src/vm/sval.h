@@ -53,4 +53,8 @@ void * sval_to_pointer(sval_t v);
 sval_t sval_from_string(char * ptr);
 char * sval_to_string(sval_t v);
 
+int32_t sval_cast_to_int(sval_t val);
+double  sval_cast_to_double(sval_t val);
+char *  sval_cast_to_string(sval_t val);
+
 #endif // _SOFT_NANBOX_H

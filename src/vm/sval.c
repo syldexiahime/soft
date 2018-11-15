@@ -154,3 +154,62 @@ inline bool sval_is_falsey(union sval v)
 		|| (sval_is_string(v)  && strcmp(sval_to_string(v), "") == 0)
 		|| (sval_is_double(v)  && sval_to_double(v)  == 0.0);
 }
+
+inline int32_t sval_cast_to_int(union sval val)
+{
+	if (sval_is_int(val))    return           sval_to_int(val);
+
+	if (sval_is_double(val)) return (int32_t) sval_to_double(val);
+
+	if (sval_is_string(val)) {
+
+		char * str = sval_to_string(val);
+
+		if (isnumber(str[0])) {
+
+			if (strstr(str, "."))
+				return (int32_t) parse_double(str);
+			else
+				return parse_int(str);
+
+		}
+
+	}
+
+	return 0;
+}
+
+inline double sval_cast_to_double(union sval val)
+{
+	if (sval_is_int(val))    return (double) sval_to_int(val);
+
+	if (sval_is_double(val)) return         sval_to_double(val);
+
+	if (sval_is_string(val)) {
+
+		char * str = sval_to_string(val);
+
+		if (isnumber(str[0])) {
+
+			if (strstr(str, "."))
+				return parse_double(str);
+			else
+				return (double) parse_int(str);
+
+		}
+
+	}
+
+	return (double) 0;
+}
+
+inline char * sval_cast_to_string(union sval val)
+{
+	if (sval_is_int(val))    return int_to_str(sval_to_int(val));
+
+	if (sval_is_double(val)) return double_to_str(sval_to_double(val));
+
+	if (sval_is_string(val)) return sval_to_string(val);
+
+	return NULL;
+}
