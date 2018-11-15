@@ -1,7 +1,7 @@
 .PHONY: all test clean
 
 CC = clang
-CC_FLAGS = -std=c11
+CC_FLAGS = -std=c99
 HEADER_DIRS = -I'src'
 
 MAIN = src/soft.c
