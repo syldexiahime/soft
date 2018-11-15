@@ -31,7 +31,15 @@ struct soft_instr {
 	X(dmovi), \
 	X(dmov), \
 	X(dpush), \
-	X(dpop)
+	X(dpop), \
+\
+	/** \
+	 * Arithmetic instructions \
+	 * */ \
+	X(dadd), \
+	X(dsub), \
+	X(dmul), \
+	X(ddiv)
 
 
 #define X(opname) soft_instr_##opname

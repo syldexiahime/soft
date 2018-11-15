@@ -197,3 +197,29 @@ void soft_test_sval_falsey(void ** state)
 	v = sval_from_pointer(NULL);
 	assert_true(sval_is_falsey(v));
 }
+
+void soft_test_sval_casts(void ** state)
+{
+	v = sval_from_int(35);
+	assert_true(sval_cast_to_double(v) == (double) 35);
+	assert_true(strcmp(sval_cast_to_string(v), "35") == 0);
+
+	v = sval_from_double(23.45);
+	assert_true(sval_cast_to_int(v) == 23);
+	assert_true(strcmp(sval_cast_to_string(v), "23.450000") == 0);
+
+
+	char * str = malloc(sizeof(char) * 5);
+
+	strcpy(str, "35");
+
+	v = sval_from_string(str);
+	assert_true(sval_cast_to_int(v) == 35);
+	assert_true(sval_cast_to_double(v) == (double) 35);
+
+	strcpy(str, "23.45");
+
+	v = sval_from_string(str);
+	assert_true(sval_cast_to_int(v) == 23);
+	assert_true(sval_cast_to_double(v) == (double) 23.45);
+}
