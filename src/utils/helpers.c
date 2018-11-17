@@ -14,14 +14,31 @@ inline bool ishex(char c) { return c == 'a' || c == 'b' || c == 'c' || c == 'd' 
 inline bool isoct(char c) { return c != '8' && c != '9' && isnumber(c); }
 inline bool isbin(char c) { return c == '0' || c == '1'; }
 
-bool str_is_double(char * str)
+inline bool str_is_int(char * str)
 {
+	for (size_t i = 0; str[i] != '\0'; i++)
+		if (!isnumber(str[i])) return false;
+	return true;
+}
+
+inline bool str_is_double(char * str)
+{
+	bool b = false;
 	for (size_t i = 0; str[i] != '\0'; i++) {
-		if (str[i] == '.')    return true;
+		if (str[i] == '.') {
+			if (b) return false;
+			b = true;
+			continue;
+		}
 		if (!isnumber(str[i])) return false;
 	}
 
-	return false;
+	return b;
+}
+
+inline bool str_is_number(char * str)
+{
+	return str_is_int(str) || str_is_double(str);
 }
 
 char * str_replace_at(char * dst, char * src, size_t pos, size_t rlen)

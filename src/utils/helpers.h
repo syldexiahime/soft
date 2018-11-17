@@ -25,7 +25,9 @@ bool ishex(char c);
 bool isoct(char c);
 bool isbin(char c);
 
+bool str_is_int(char * str);
 bool str_is_double(char * str);
+bool str_is_number(char * str);
 
 char * str_replace_at(char * dst, char * src, size_t pos, size_t len);
 
