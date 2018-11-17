@@ -43,65 +43,6 @@ void soft_vm_run_vm(struct soft_vm * vm)
 	#define softvm_arithmetic(type, op) \
 		vm->r[instr.dst] = sval_from_##type(sval_to_##type(vm->r[instr.src]) op sval_to_##type(vm->r[instr.imm]));
 
-	#define softvm_dynamic_arithmetic(left, right, op) \
-		do { \
-\
-			if (sval_is_nan(left) || sval_is_nan(right)) { \
-				vm->r[instr.dst] = sval_nan(); \
-			} \
-			else if (sval_is_int(left)) { \
-\
-				if (sval_is_double(right) \
-					|| (sval_is_string(right) && str_is_double(sval_to_string(right)))) { \
-					vm->r[instr.dst] = sval_from_double(sval_cast_to_double(left) op sval_cast_to_double(right)); \
-				} \
-				else if (sval_is_int(right) \
-					|| (sval_is_string(right) && str_is_int(sval_to_string(right)))) \
-					vm->r[instr.dst] = sval_from_int(sval_to_int(left) op sval_cast_to_int(right)); \
-				else \
-					vm->r[instr.dst] = sval_nan(); \
-\
-			} \
-			else if (sval_is_double(left)) { \
-\
-				if (sval_is_number(right) \
-					|| (sval_is_string(right) && str_is_number(sval_to_string(right)))) \
-					vm->r[instr.dst] = sval_from_double(sval_cast_to_double(left) op sval_cast_to_double(right)); \
-				else \
-					vm->r[instr.dst] = sval_nan(); \
-\
-			} \
-			else if (sval_is_string(left)) { \
-\
-				if (sval_is_string(right)) { \
-\
-					if (str_is_number(sval_to_string(left)) && str_is_number(sval_to_string(right))) { \
-						if (str_is_double(sval_to_string(left)) || str_is_double(sval_to_string(right))) \
-							vm->r[instr.dst] = sval_from_double(sval_cast_to_double(left) op sval_cast_to_double(right)); \
-						else \
-							vm->r[instr.dst] = sval_from_int(sval_cast_to_int(left) op sval_cast_to_int(right)); \
-					} \
-					else { \
-						vm->r[instr.dst] = sval_nan(); \
-					} \
-\
-				} \
-				else if (sval_is_double(right) \
-						|| str_is_double(sval_to_string(left))) { \
-					vm->r[instr.dst] = sval_from_double(sval_cast_to_double(left) op sval_cast_to_double(right)); \
-				} \
-				else if (sval_is_int(right) \
-						|| str_is_int(sval_to_string(left))) { \
-					vm->r[instr.dst] = sval_from_int(sval_cast_to_int(left) op sval_cast_to_int(right)); \
-				} \
-				else { \
-					vm->r[instr.dst] = sval_nan(); \
-				} \
-\
-			} \
-\
-		} while (0)
-
 	#define softvm_arithmetic_immediate(type, op) \
 		vm->r[instr.dst] = sval_from_##type(sval_to_##type(vm->r[instr.src]) op instr.imm);
 
@@ -180,19 +121,19 @@ void soft_vm_run_vm(struct soft_vm * vm)
 		 * */
 
 		softvm_op(dadd)
-			softvm_dynamic_arithmetic(vm->r[instr.src], vm->r[instr.imm], +);
+			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], +, vm->r[instr.imm]);
 			goto increment_pc;
 
 		softvm_op(dsub)
-			softvm_dynamic_arithmetic(vm->r[instr.src], vm->r[instr.imm], -);
+			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], -, vm->r[instr.imm]);
 			goto increment_pc;
 
 		softvm_op(dmul)
-			softvm_dynamic_arithmetic(vm->r[instr.src], vm->r[instr.imm], *);
+			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], *, vm->r[instr.imm]);
 			goto increment_pc;
 
 		softvm_op(ddiv)
-			softvm_dynamic_arithmetic(vm->r[instr.src], vm->r[instr.imm], /);
+			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], /, vm->r[instr.imm]);
 			goto increment_pc;
 
 		softvm_op(daddi)
