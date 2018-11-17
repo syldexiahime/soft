@@ -22,6 +22,7 @@ typedef union sval sval_t;
 sval_t sval_from_bits(uint64_t bits);
 
 bool sval_is_null(sval_t v);
+bool sval_is_nan(sval_t v);
 bool sval_is_true(sval_t v);
 bool sval_is_false(sval_t v);
 bool sval_is_bool(sval_t v);
@@ -37,6 +38,7 @@ bool sval_is_falsey(sval_t v);
 sval_t sval_null();
 sval_t sval_true();
 sval_t sval_false();
+sval_t sval_nan();
 
 sval_t sval_from_bool(bool);
 bool sval_to_bool(sval_t v);
