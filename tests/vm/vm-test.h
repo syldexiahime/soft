@@ -13,6 +13,7 @@ struct soft_vm vm;
  * Sval tests
  * */
 void soft_test_sval_null(void ** state);
+void soft_test_sval_nan(void ** state);
 void soft_test_sval_true(void ** state);
 void soft_test_sval_false(void ** state);
 void soft_test_sval_bool(void ** state);
@@ -37,6 +38,8 @@ void soft_vm_test_dmov(void **state);
 /**
  * Dynamic Arithmetic tests
  * */
-void soft_vm_test_dadd(void ** state);
+void soft_vm_test_dynamic_arithmetic_int(void ** state);
+void soft_vm_test_dynamic_arithmetic_double(void ** state);
+void soft_vm_test_dynamic_arithmetic_string(void ** state);
 
 #endif // _SOFT_VM_TEST_H
