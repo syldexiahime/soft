@@ -9,6 +9,26 @@ void soft_test_sval_null(void ** state)
 
 	assert_true(sval_is_null(v));
 
+	assert_false(sval_is_nan(v));
+	assert_false(sval_is_number(v));
+	assert_false(sval_is_double(v));
+	assert_false(sval_is_int(v));
+	assert_false(sval_is_pointer(v));
+	assert_false(sval_is_true(v));
+	assert_false(sval_is_false(v));
+
+	assert_false(sval_is_bool(v));
+	assert_false(sval_is_truthy(v));
+	assert_true(sval_is_falsey(v));
+}
+
+void soft_test_sval_nan(void ** state)
+{
+	v = sval_nan();
+
+	assert_true(sval_is_nan(v));
+
+	assert_false(sval_is_null(v));
 	assert_false(sval_is_number(v));
 	assert_false(sval_is_double(v));
 	assert_false(sval_is_int(v));
@@ -28,6 +48,7 @@ void soft_test_sval_true(void ** state)
 	assert_true(sval_is_bool(v));
 	assert_true(sval_is_true(v));
 
+	assert_false(sval_is_nan(v));
 	assert_false(sval_is_number(v));
 	assert_false(sval_is_double(v));
 	assert_false(sval_is_int(v));
@@ -46,6 +67,7 @@ void soft_test_sval_false(void ** state)
 	assert_true(sval_is_bool(v));
 	assert_true(sval_is_false(v));
 
+	assert_false(sval_is_nan(v));
 	assert_false(sval_is_number(v));
 	assert_false(sval_is_double(v));
 	assert_false(sval_is_int(v));
@@ -67,6 +89,7 @@ void soft_test_sval_bool(void ** state)
 	assert_true(sval_is_bool(v));
 	assert_true(sval_is_true(v));
 
+	assert_false(sval_is_nan(v));
 	assert_false(sval_is_number(v));
 	assert_false(sval_is_double(v));
 	assert_false(sval_is_int(v));
@@ -104,6 +127,7 @@ void soft_test_sval_pointer(void ** state)
 
 	assert_true(sval_is_pointer(v));
 
+	assert_false(sval_is_nan(v));
 	assert_false(sval_is_number(v));
 	assert_false(sval_is_double(v));
 	assert_false(sval_is_int(v));
@@ -127,6 +151,7 @@ void soft_test_sval_double(void ** state)
 	assert_true(sval_is_number(v));
 	assert_true(sval_is_double(v));
 
+	assert_false(sval_is_nan(v));
 	assert_false(sval_is_int(v));
 	assert_false(sval_is_pointer(v));
 	assert_false(sval_is_null(v));
@@ -149,6 +174,7 @@ void soft_test_sval_int(void ** state)
 	assert_true(sval_is_number(v));
 	assert_true(sval_is_int(v));
 
+	assert_false(sval_is_nan(v));
 	assert_false(sval_is_double(v));
 	assert_false(sval_is_pointer(v));
 	assert_false(sval_is_null(v));
@@ -173,6 +199,7 @@ void soft_test_sval_string(void ** state)
 	assert_true(sval_is_string(v));
 	assert_true(sval_is_pointer(v));
 
+	assert_false(sval_is_nan(v));
 	assert_false(sval_is_number(v));
 	assert_false(sval_is_double(v));
 	assert_false(sval_is_int(v));
@@ -195,6 +222,8 @@ void soft_test_sval_falsey(void ** state)
 	v = sval_from_double(0.0f);
 	assert_true(sval_is_falsey(v));
 	v = sval_from_pointer(NULL);
+	assert_true(sval_is_falsey(v));
+	v = sval_null();
 	assert_true(sval_is_falsey(v));
 }
 

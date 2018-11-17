@@ -6,6 +6,7 @@
 #define NANBOX_POINTER_MASK         0x0000fffffffffffcul
 
 #define NANBOX_VALUE_NULL  0b000ul
+#define NANBOX_VALUE_NAN   0b100ul
 #define NANBOX_VALUE_TRUE  0b110ul
 #define NANBOX_VALUE_FALSE 0b111ul
 
@@ -20,10 +21,12 @@ inline union sval sval_from_bits(uint64_t bits)
 }
 
 inline bool sval_is_null(union sval val)  { return val.as_int == NANBOX_VALUE_NULL;  }
+inline bool sval_is_nan(union sval val)   { return val.as_int == NANBOX_VALUE_NAN;   }
 inline bool sval_is_true(union sval val)  { return val.as_int == NANBOX_VALUE_TRUE;  }
 inline bool sval_is_false(union sval val) { return val.as_int == NANBOX_VALUE_FALSE; }
 
 inline union sval sval_null()  { union sval val; val.as_int = NANBOX_VALUE_NULL;  return val; }
+inline union sval sval_nan()   { union sval val; val.as_int = NANBOX_VALUE_NAN;   return val; }
 inline union sval sval_true()  { union sval val; val.as_int = NANBOX_VALUE_TRUE;  return val; }
 inline union sval sval_false() { union sval val; val.as_int = NANBOX_VALUE_FALSE; return val; }
 
@@ -149,6 +152,7 @@ inline bool sval_is_falsey(union sval v)
 {
 	return (sval_is_false(v))
 		|| (sval_is_null(v))
+		|| (sval_is_nan(v))
 		|| (sval_is_int(v)     && sval_to_int(v)     == 0)
 		|| (sval_is_pointer(v) && sval_to_pointer(v) == NULL)
 		|| (sval_is_string(v)  && strcmp(sval_to_string(v), "") == 0)
@@ -165,14 +169,10 @@ inline int32_t sval_cast_to_int(union sval val)
 
 		char * str = sval_to_string(val);
 
-		if (isnumber(str[0])) {
-
-			if (strstr(str, "."))
-				return (int32_t) parse_double(str);
-			else
-				return parse_int(str);
-
-		}
+		if (str_is_int(str))
+			return parse_int(str);
+		else if (str_is_double(str))
+			return (int32_t) parse_double(str);
 
 	}
 
@@ -189,14 +189,10 @@ inline double sval_cast_to_double(union sval val)
 
 		char * str = sval_to_string(val);
 
-		if (isnumber(str[0])) {
-
-			if (strstr(str, "."))
-				return parse_double(str);
-			else
-				return (double) parse_int(str);
-
-		}
+		if (str_is_double(str))
+			return parse_double(str);
+		else if (str_is_int(str))
+			return (double) parse_int(str);
 
 	}
 

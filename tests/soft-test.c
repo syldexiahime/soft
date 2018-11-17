@@ -29,6 +29,7 @@ int main(void) {
 		 * */
 		#ifdef SOFT_VM_TESTS
 		cmocka_unit_test(soft_test_sval_null),
+		cmocka_unit_test(soft_test_sval_nan),
 		cmocka_unit_test(soft_test_sval_true),
 		cmocka_unit_test(soft_test_sval_false),
 		cmocka_unit_test(soft_test_sval_bool),
