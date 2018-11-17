@@ -23,6 +23,9 @@ void soft_test_sval_pointer(void ** state);
 void soft_test_sval_string(void ** state);
 void soft_test_sval_falsey(void ** state);
 void soft_test_sval_casts(void ** state);
+void soft_test_sval_arithmetic_int(void ** state);
+void soft_test_sval_arithmetic_double(void ** state);
+void soft_test_sval_arithmetic_string(void ** state);
 
 /**
  * Load instruction tests
@@ -38,8 +41,6 @@ void soft_vm_test_dmov(void **state);
 /**
  * Dynamic Arithmetic tests
  * */
-void soft_vm_test_dynamic_arithmetic_int(void ** state);
-void soft_vm_test_dynamic_arithmetic_double(void ** state);
-void soft_vm_test_dynamic_arithmetic_string(void ** state);
+void soft_vm_test_dynamic_arithmetic(void ** state);
 
 #endif // _SOFT_VM_TEST_H
