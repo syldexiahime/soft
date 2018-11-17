@@ -19,6 +19,8 @@ int main(void) {
 		cmocka_unit_test(soft_test_parse_numbers),
 		cmocka_unit_test(soft_test_numbers_to_str),
 
+		cmocka_unit_test(soft_test_str_is_number),
+
 		cmocka_unit_test(soft_test_tagged_pointers),
 		#endif
 

@@ -27,10 +27,18 @@ void soft_test_parse_numbers(void ** state)
 	assert_true(parse_double("23.45") == 23.45);
 }
 
+void soft_test_str_is_number(void ** state)
+{
+	assert_true(str_is_double("12.34"));
+	assert_true(str_is_int("1234"));
+	assert_false(str_is_double("1234"));
+	assert_false(str_is_double("12.34efg"));
+	assert_false(str_is_int("12.34"));
+	assert_false(str_is_int("12abc"));
+}
+
 void soft_test_numbers_to_str(void ** state)
 {
-	char * str;
-
 	assert_true(strcmp(int_to_str(345), "345") == 0);
 	assert_true(strcmp(float_to_str(23.45f), "23.450001") == 0);
 	assert_true(strcmp(double_to_str(23.45), "23.450000") == 0);
