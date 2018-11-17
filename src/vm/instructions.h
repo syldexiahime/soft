@@ -19,6 +19,7 @@ struct soft_instr {
 	 * Misc. instructions \
 	 * */ \
 	X(halt), \
+	X(breakpoint), \
 	X(noop), \
 	X(syscall), \
  \
@@ -39,7 +40,43 @@ struct soft_instr {
 	X(dadd), \
 	X(dsub), \
 	X(dmul), \
-	X(ddiv)
+	X(ddiv), \
+	X(daddi), \
+	X(dsubi), \
+	X(dmuli), \
+	X(ddivi), \
+\
+	/** \
+	 * Logical instructions \
+	 * */ \
+	X(eq), \
+	X(gt), \
+	X(lt), \
+	X(gteq), \
+	X(lteq), \
+\
+	/** \
+	 * Bitwise instructions \
+	 * */ \
+	X(and), \
+	X(or), \
+	X(not), \
+	X(xor), \
+	X(lshift), \
+	X(rshift), \
+\
+	/** \
+	 * Jump instructions \
+	 * */ \
+	X(jmp), \
+	X(jmpz), \
+	X(jmpnz), \
+\
+	/** \
+	 * Cast instructions \
+	 * */ \
+	X(castint32), \
+	X(castfloat)
 
 
 #define X(opname) soft_instr_##opname
