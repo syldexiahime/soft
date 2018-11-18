@@ -352,3 +352,32 @@ void soft_test_sval_arithmetic_string(void ** state)
 	assert_true(sval_is_nan(v));
 }
 
+void soft_test_sval_comparison(void ** state)
+{
+	sval_t v;
+
+	sval_t i      = sval_from_int(17);
+	sval_t d      = sval_from_double(17);
+	sval_t istr   = sval_from_string(smalloc(sizeof(char) * 2));
+	sval_t dstr   = sval_from_string(smalloc(sizeof(char) * 5));
+	sval_t nanstr = sval_from_string(smalloc(sizeof(char) * 6));
+
+	strcpy(sval_to_string(istr), "17");
+	strcpy(sval_to_string(dstr), "17.00");
+	strcpy(sval_to_string(nanstr), "1.5NaN");
+
+	sval_comparison(v, i, ==, i);
+	assert_true(sval_is_true(v));
+	sval_comparison(v, i, ==, sval_from_int(18));
+	assert_true(sval_is_false(v));
+
+	sval_comparison(v, i, ==, d);
+	assert_true(sval_is_true(v));
+	sval_comparison(v, i, ==, istr);
+	assert_true(sval_is_true(v));
+	sval_comparison(v, i, ==, dstr);
+	assert_true(sval_is_true(v));
+	sval_comparison(v, i, ==, nanstr);
+	assert_true(sval_is_false(v));
+}
+

@@ -49,11 +49,11 @@ struct soft_instr {
 	/** \
 	 * Logical instructions \
 	 * */ \
-	X(eq), \
-	X(gt), \
-	X(lt), \
-	X(gteq), \
-	X(lteq), \
+	X(deq), \
+	X(dgt), \
+	X(dlt), \
+	X(dgteq), \
+	X(dlteq), \
 \
 	/** \
 	 * Bitwise instructions \

@@ -137,39 +137,39 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			goto increment_pc;
 
 		softvm_op(daddi)
-			softvm_arithmetic_immediate(int, +);
+			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], +, sval_from_int(instr.imm));
 			goto increment_pc;
 
 		softvm_op(dsubi)
-			softvm_arithmetic_immediate(int, -);
+			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], -, sval_from_int(instr.imm));
 			goto increment_pc;
 
 		softvm_op(dmuli)
-			softvm_arithmetic_immediate(int, *);
+			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], *, sval_from_int(instr.imm));
 			goto increment_pc;
 
 		softvm_op(ddivi)
-			softvm_arithmetic_immediate(int, /);
+			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], /, sval_from_int(instr.imm));
 			goto increment_pc;
 
-		softvm_op(eq)
-			// TODO
+		softvm_op(deq)
+			sval_comparison(vm->r[instr.dst], vm->r[instr.src], ==, vm->r[instr.imm]);
 			goto increment_pc;
 
-		softvm_op(gt)
-			// TODO
+		softvm_op(dgt)
+			sval_comparison(vm->r[instr.dst], vm->r[instr.src], >, vm->r[instr.imm]);
 			goto increment_pc;
 
-		softvm_op(lt)
-			// TODO
+		softvm_op(dlt)
+			sval_comparison(vm->r[instr.dst], vm->r[instr.src], <, vm->r[instr.imm]);
 			goto increment_pc;
 
-		softvm_op(gteq)
-			// TODO
+		softvm_op(dgteq)
+			sval_comparison(vm->r[instr.dst], vm->r[instr.src], >=, vm->r[instr.imm]);
 			goto increment_pc;
 
-		softvm_op(lteq)
-			// TODO
+		softvm_op(dlteq)
+			sval_comparison(vm->r[instr.dst], vm->r[instr.src], <=, vm->r[instr.imm]);
 			goto increment_pc;
 
 		softvm_op(and)
