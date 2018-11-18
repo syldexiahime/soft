@@ -122,4 +122,16 @@ char *  sval_cast_to_string(sval_t val);
 \
 	} while (0)
 
+#define sval_comparison(var, left, op, right) \
+	do { \
+\
+		if ((sval_is_number(left) || (sval_is_string(left) && str_is_number(sval_to_string(left)))) \
+			&& (sval_is_number(right) || (sval_is_string(right) && str_is_number(sval_to_string(right))))) \
+			var = sval_from_bool(sval_cast_to_double(left) op sval_cast_to_double(right)); \
+		else \
+			var = sval_false(); \
+\
+	} while (0)
+
 #endif // _SOFT_NANBOX_H
+
