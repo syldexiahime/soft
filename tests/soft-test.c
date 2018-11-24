@@ -42,7 +42,6 @@ int main(void) {
 		cmocka_unit_test(soft_test_sval_arithmetic_int),
 		cmocka_unit_test(soft_test_sval_arithmetic_double),
 		cmocka_unit_test(soft_test_sval_arithmetic_string),
-		cmocka_unit_test(soft_test_sval_comparison),
 
 		cmocka_unit_test(soft_vm_test_dloadi),
 		cmocka_unit_test(soft_vm_test_dload),

@@ -19,6 +19,7 @@ struct soft_vm {
 	union sval r[SOFT_VM_NUM_REGS];
 	struct soft_instr * ip;
 	bool zf;
+	bool sf;
 	union sval * ds;
 	struct soft_instr * instructions;
 };
