@@ -41,12 +41,6 @@ void soft_vm_run_vm(struct soft_vm * vm)
 	#define get_sval_from_instr(instr) \
 		(!instr.iflag ? vm->r[(uint8_t) instr.imm] : sval_from_bits((uint64_t) instr.imm));
 
-	#define softvm_arithmetic(type, op) \
-		vm->r[instr.dst] = sval_from_##type(sval_to_##type(vm->r[instr.src]) op sval_to_##type(vm->r[instr.imm]));
-
-	#define softvm_arithmetic_immediate(type, op) \
-		vm->r[instr.dst] = sval_from_##type(sval_to_##type(vm->r[instr.src]) op instr.imm);
-
 	struct soft_instr instr;
 
 	goto start; // Don't increment ip on first run
@@ -177,28 +171,28 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			goto increment_pc;
 		}
 
-		softvm_op(and)
-			// TODO
+		softvm_op(dand)
+			vm->r[instr.dst] = sval_from_int(sval_cast_to_int(vm->r[instr.src]) & sval_cast_to_int(vm->r[instr.imm]));
 			goto increment_pc;
 
-		softvm_op(or)
-			// TODO
+		softvm_op(dor)
+			vm->r[instr.dst] = sval_from_int(sval_cast_to_int(vm->r[instr.src]) | sval_cast_to_int(vm->r[instr.imm]));
 			goto increment_pc;
 
-		softvm_op(not)
-			// TODO
+		softvm_op(dnot)
+			vm->r[instr.dst] = sval_from_int(~ sval_cast_to_int(vm->r[instr.src]));
 			goto increment_pc;
 
-		softvm_op(xor)
-			// TODO
+		softvm_op(dxor)
+			vm->r[instr.dst] = sval_from_int(sval_cast_to_int(vm->r[instr.src]) ^ sval_cast_to_int(vm->r[instr.imm]));
 			goto increment_pc;
 
-		softvm_op(lshift)
-			// TODO
+		softvm_op(dlshift)
+			vm->r[instr.dst] = sval_from_int(sval_cast_to_int(vm->r[instr.src]) << sval_cast_to_int(vm->r[instr.imm]));
 			goto increment_pc;
 
-		softvm_op(rshift)
-			// TODO
+		softvm_op(drshift)
+			vm->r[instr.dst] = sval_from_int(sval_cast_to_int(vm->r[instr.src]) >> sval_cast_to_int(vm->r[instr.imm]));
 			goto increment_pc;
 
 		softvm_op(jmp)
@@ -229,7 +223,7 @@ void soft_vm_run_vm(struct soft_vm * vm)
 #endif
 
 	exit_vm: ;
-	
+
 		return;
 }
 

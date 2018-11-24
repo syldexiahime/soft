@@ -51,12 +51,12 @@ struct soft_instr {
 	/** \
 	 * Bitwise instructions \
 	 * */ \
-	X(and), \
-	X(or), \
-	X(not), \
-	X(xor), \
-	X(lshift), \
-	X(rshift), \
+	X(dand), \
+	X(dor), \
+	X(dnot), \
+	X(dxor), \
+	X(dlshift), \
+	X(drshift), \
 \
 	/** \
 	 * Jump instructions \
