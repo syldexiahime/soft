@@ -7,7 +7,8 @@ void soft_vm_init_vm(struct soft_vm * vm)
 	for (int i = 0; i < SOFT_VM_NUM_REGS; i ++) {
 		vm->r[i].as_bits = 0;
 	}
-	vm->zf = false;
+	vm->zf = 0;
+	vm->sf = 0;
 }
 
 void soft_vm_load_program(struct soft_vm * vm, struct soft_program * program)
@@ -47,7 +48,6 @@ void soft_vm_run_vm(struct soft_vm * vm)
 		vm->r[instr.dst] = sval_from_##type(sval_to_##type(vm->r[instr.src]) op instr.imm);
 
 	struct soft_instr instr;
-	sval_t * ptr;
 
 	goto start; // Don't increment ip on first run
 
@@ -91,10 +91,11 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			vm->r[instr.dst] = vm->ds[instr.imm];
 			goto increment_pc;
 
-		softvm_op(dstore)
-			ptr  = sval_to_pointer(vm->r[instr.dst]);
+		softvm_op(dstore) {
+			sval_t * ptr  = sval_to_pointer(vm->r[instr.dst]);
 			*ptr = vm->r[instr.src];
 			goto increment_pc;
+		}
 
 		softvm_op(dmov)
 			vm->r[instr.dst] = vm->r[(uint8_t) instr.imm];
@@ -104,17 +105,19 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			vm->r[instr.dst] = sval_from_int(instr.imm);
 			goto increment_pc;
 
-		softvm_op(dpush)
-			ptr             = sval_to_pointer(vm->r[soft_rbp]);
+		softvm_op(dpush) {
+			sval_t * ptr    = sval_to_pointer(vm->r[soft_rbp]);
 			*ptr            = get_sval_from_instr(instr);
 			vm->r[soft_rsp] = sval_from_pointer(ptr++);
 			goto increment_pc;
+		}
 
-		softvm_op(dpop)
-			ptr              = sval_to_pointer(vm->r[soft_rbp]);
+		softvm_op(dpop) {
+			sval_t * ptr     = sval_to_pointer(vm->r[soft_rbp]);
 			vm->r[instr.dst] = *ptr;
 			vm->r[soft_rsp]  = sval_from_pointer(ptr--);
 			goto increment_pc;
+		}
 
 		/**
 		 * Dynamic Arithmetic
@@ -152,25 +155,27 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], /, sval_from_int(instr.imm));
 			goto increment_pc;
 
-		softvm_op(deq)
-			sval_comparison(vm->r[instr.dst], vm->r[instr.src], ==, vm->r[instr.imm]);
-			goto increment_pc;
+		softvm_op(dcmp) {
+			sval_t res;
+			sval_arithmetic(res, vm->r[instr.src], -, vm->r[instr.imm]);
 
-		softvm_op(dgt)
-			sval_comparison(vm->r[instr.dst], vm->r[instr.src], >, vm->r[instr.imm]);
-			goto increment_pc;
+			if (sval_is_double(res)) {
+				double d = sval_to_double(res);
+				vm->zf = d == 0.0;
+				vm->sf = d <  0.0;
+			}
+			else if (sval_is_int(res)) {
+				int32_t i = sval_to_int(res);
+				vm->zf = i == 0;
+				vm->sf = i <  0;
+			}
+			else {
+				vm->zf = 0;
+				vm->sf = 0;
+			}
 
-		softvm_op(dlt)
-			sval_comparison(vm->r[instr.dst], vm->r[instr.src], <, vm->r[instr.imm]);
 			goto increment_pc;
-
-		softvm_op(dgteq)
-			sval_comparison(vm->r[instr.dst], vm->r[instr.src], >=, vm->r[instr.imm]);
-			goto increment_pc;
-
-		softvm_op(dlteq)
-			sval_comparison(vm->r[instr.dst], vm->r[instr.src], <=, vm->r[instr.imm]);
-			goto increment_pc;
+		}
 
 		softvm_op(and)
 			// TODO

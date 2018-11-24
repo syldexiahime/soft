@@ -22,13 +22,16 @@ void soft_vm_test_dynamic_comparison(void ** state)
 		sinstr(dload, 1, 0, soft_rbx, 1),
 		sinstr(dload, 1, 0, soft_rcx, 2),
 		sinstr(dload, 1, 0, soft_rdx, 3),
-		sinstr(deq, 0, soft_rax, soft_rdi, soft_rax),
-		sinstr(deq, 0, soft_rax, soft_rsi, soft_rbx),
-		sinstr(deq, 0, soft_rax, soft_rsp, soft_rcx),
-		sinstr(deq, 0, soft_rax, soft_rbp, soft_rdx),
+		sinstr(dcmp, 0, soft_rax, 0, soft_rax),
+		sinstr(breakpoint, 0, 0, 0, 0),
+		sinstr(dcmp, 0, soft_rax, 0, soft_rbx),
+		sinstr(breakpoint, 0, 0, 0, 0),
+		sinstr(dcmp, 0, soft_rax, 0, soft_rcx),
+		sinstr(breakpoint, 0, 0, 0, 0),
+		sinstr(dcmp, 0, soft_rax, 0, soft_rdx),
 		sinstr(breakpoint, 0, 0, 0, 0),
 		sinstr(dload, 1, 0, soft_rbx, 4),
-		sinstr(deq, 0, soft_rax, soft_rdi, soft_rbx),
+		sinstr(dcmp, 0, soft_rax, 0, soft_rbx),
 		sinstr(halt, 0, 0, 0, 0),
 	};
 
@@ -38,14 +41,25 @@ void soft_vm_test_dynamic_comparison(void ** state)
 	};
 
 	soft_vm_load_program(&vm, &test_program);
-	soft_vm_run_vm(&vm);
-
-	assert_true(sval_is_true(vm.r[soft_rdi]));
-	assert_true(sval_is_true(vm.r[soft_rsi]));
-	assert_true(sval_is_true(vm.r[soft_rsp]));
-	assert_true(sval_is_true(vm.r[soft_rbp]));
 
 	soft_vm_run_vm(&vm);
+	assert_true(vm.zf == 1);
+	assert_true(vm.sf == 0);
 
-	assert_true(sval_is_false(vm.r[soft_rdi]));
+	soft_vm_run_vm(&vm);
+	assert_true(vm.zf == 1);
+	assert_true(vm.sf == 0);
+
+	soft_vm_run_vm(&vm);
+	assert_true(vm.zf == 1);
+	assert_true(vm.sf == 0);
+
+	soft_vm_run_vm(&vm);
+	assert_true(vm.zf == 1);
+	assert_true(vm.sf == 0);
+
+	soft_vm_run_vm(&vm);
+	assert_true(vm.zf == 0);
+	assert_true(vm.sf == 0);
+
 }

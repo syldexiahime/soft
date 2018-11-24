@@ -26,7 +26,6 @@ void soft_test_sval_casts(void ** state);
 void soft_test_sval_arithmetic_int(void ** state);
 void soft_test_sval_arithmetic_double(void ** state);
 void soft_test_sval_arithmetic_string(void ** state);
-void soft_test_sval_comparison(void ** state);
 
 /**
  * Load instruction tests
