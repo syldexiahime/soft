@@ -38,10 +38,8 @@ void soft_vm_test_dstore(void ** state);
 void soft_vm_test_dmovi(void **state);
 void soft_vm_test_dmov(void **state);
 
-/**
- * Dynamic Arithmetic tests
- * */
 void soft_vm_test_dynamic_arithmetic(void ** state);
 void soft_vm_test_dynamic_comparison(void ** state);
+void soft_vm_test_dynamic_bitwise(void ** state);
 
 #endif // _SOFT_VM_TEST_H
