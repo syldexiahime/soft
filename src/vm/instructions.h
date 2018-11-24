@@ -46,14 +46,7 @@ struct soft_instr {
 	X(dmuli), \
 	X(ddivi), \
 \
-	/** \
-	 * Logical instructions \
-	 * */ \
-	X(deq), \
-	X(dgt), \
-	X(dlt), \
-	X(dgteq), \
-	X(dlteq), \
+	X(dcmp), \
 \
 	/** \
 	 * Bitwise instructions \
