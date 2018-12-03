@@ -19,15 +19,15 @@ void soft_vm_test_dynamic_arithmetic(void ** state)
 
 	struct soft_instr instructions[] = {
 		sinstr(dload, 1, 0, soft_rax, 0),
-		sinstr(dload, 1, 0, soft_rbx, 1),
-		sinstr(dload, 1, 0, soft_rcx, 2),
-		sinstr(dload, 1, 0, soft_rdx, 3),
+		sinstr(dload, 1, 0, soft_rbx, 8),
+		sinstr(dload, 1, 0, soft_rcx, 16),
+		sinstr(dload, 1, 0, soft_rdx, 24),
 		sinstr(dadd, 0, soft_rax, soft_rdi, soft_rax),
 		sinstr(dadd, 0, soft_rax, soft_rsi, soft_rbx),
 		sinstr(dadd, 0, soft_rax, soft_rsp, soft_rcx),
 		sinstr(dadd, 0, soft_rax, soft_rbp, soft_rdx),
 		sinstr(breakpoint, 0, 0, 0, 0),
-		sinstr(dload, 0, 0, soft_rbx, 4),
+		sinstr(dload, 0, 0, soft_rbx, 32),
 		sinstr(dadd, 0, soft_rax, soft_rdi, soft_rbx),
 		sinstr(halt, 0, 0, 0, 0),
 	};
