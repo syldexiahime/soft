@@ -82,11 +82,11 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			goto increment_pc;
 
 		softvm_op(dload)
-			vm->r[instr.dst] = vm->ds[instr.imm];
+			memcpy(&vm->r[instr.dst], &vm->ds[instr.imm], sizeof(sval_t));
 			goto increment_pc;
 
 		softvm_op(dstore) {
-			sval_t * ptr  = sval_to_pointer(vm->r[instr.dst]);
+			sval_t * ptr = sval_to_pointer(vm->r[instr.dst]);
 			*ptr = vm->r[instr.src];
 			goto increment_pc;
 		}

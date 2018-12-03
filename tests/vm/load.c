@@ -24,7 +24,7 @@ void soft_vm_test_dload(void **state)
 
 void soft_vm_test_dloadi(void **state)
 {
-	sval_t i = sval_from_int(17);
+	sval_t i = sval_from_int(27);
 
 	sval_t datastore[] = {
 		sval_from_pointer(&i),
@@ -44,5 +44,5 @@ void soft_vm_test_dloadi(void **state)
 	soft_vm_load_program(&vm, &test_program);
 	soft_vm_run_vm(&vm);
 
-	assert_true(sval_to_int(vm.r[soft_rbx]) == 17);
+	assert_true(sval_to_int(vm.r[soft_rbx]) == 27);
 }

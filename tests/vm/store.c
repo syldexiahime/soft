@@ -13,7 +13,7 @@ void soft_vm_test_dstore(void ** state)
 
 	struct soft_instr instructions[] = {
 		sinstr(dload, 1, 0, soft_rax, 0),
-		sinstr(dload, 1, 0, soft_rbx, 1),
+		sinstr(dload, 1, 0, soft_rbx, 8),
 		sinstr(dstore, 0, soft_rax, soft_rbx, 0),
 		sinstr(halt, 0, 0, 0, 0),
 	};

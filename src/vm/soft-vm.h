@@ -11,7 +11,7 @@
 #include <assert.h>
 
 struct soft_program {
-	sval_t * datastore;
+	char * datastore;
 	struct soft_instr * instructions;
 };
 
@@ -20,7 +20,7 @@ struct soft_vm {
 	struct soft_instr * ip;
 	bool zf;
 	bool sf;
-	sval_t * ds;
+	char * ds;
 	struct soft_instr * instructions;
 };
 
