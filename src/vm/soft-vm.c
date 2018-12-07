@@ -38,9 +38,6 @@ void soft_vm_run_vm(struct soft_vm * vm)
 
 #endif
 
-	#define get_sval_from_instr(instr) \
-		(!instr.iflag ? vm->r[(uint8_t) instr.imm] : sval_from_bits((uint64_t) instr.imm));
-
 	struct soft_instr instr;
 
 	goto start; // Don't increment ip on first run
@@ -100,16 +97,16 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			goto increment_pc;
 
 		softvm_op(dpush) {
-			sval_t * ptr    = sval_to_pointer(vm->r[soft_rbp]);
-			*ptr            = get_sval_from_instr(instr);
-			vm->r[soft_rsp] = sval_from_pointer(ptr++);
+			sval_t * ptr    = bitwise_cast(sval_t *, sval_t, vm->r[soft_rsp]);
+			*ptr            = vm->r[instr.src];
+			vm->r[soft_rsp] = bitwise_cast(sval_t, sval_t *, --ptr);
 			goto increment_pc;
 		}
 
 		softvm_op(dpop) {
-			sval_t * ptr     = sval_to_pointer(vm->r[soft_rbp]);
+			sval_t * ptr     = bitwise_cast(sval_t *, sval_t, vm->r[soft_rsp]) + 1;
 			vm->r[instr.dst] = *ptr;
-			vm->r[soft_rsp]  = sval_from_pointer(ptr--);
+			vm->r[soft_rsp]  = bitwise_cast(sval_t, sval_t *, ptr);
 			goto increment_pc;
 		}
 
@@ -197,15 +194,15 @@ void soft_vm_run_vm(struct soft_vm * vm)
 
 		softvm_op(jmp)
 			// TODO
-			goto increment_pc;
+			goto start;
 
 		softvm_op(jmpz)
 			// TODO
-			goto increment_pc;
+			goto start;
 
 		softvm_op(jmpnz)
 			// TODO
-			goto increment_pc;
+			goto start;
 
 		softvm_op(castint32)
 			// TODO
