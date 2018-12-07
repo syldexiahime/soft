@@ -42,4 +42,6 @@ void soft_vm_test_dynamic_arithmetic(void ** state);
 void soft_vm_test_dynamic_comparison(void ** state);
 void soft_vm_test_dynamic_bitwise(void ** state);
 
+void soft_vm_test_dpush_and_dpop(void **state);
+
 #endif // _SOFT_VM_TEST_H
