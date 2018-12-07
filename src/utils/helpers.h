@@ -9,7 +9,7 @@
 #include <ctype.h>
 
 #define bitwise_cast(type_to, type_from, value) \
-	((union { type_from from; type_to to; }) { value }.to)
+	((union { type_from from; type_to to; }) { (value) }.to)
 
 int    parse_int(char * s);
 int    parse_hex(char * s);
@@ -33,5 +33,7 @@ char * str_replace_at(char * dst, char * src, size_t pos, size_t len);
 
 // temporary definiton, replace with actual implementation later
 #define smalloc(size) malloc(size)
+#define srealloc(var, size) realloc(var, size)
+#define sfree(ptr) free(ptr)
 
 #endif // _SOFT_HELPERS_H
