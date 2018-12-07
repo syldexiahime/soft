@@ -52,6 +52,8 @@ int main(void) {
 		cmocka_unit_test(soft_vm_test_dynamic_arithmetic),
 		cmocka_unit_test(soft_vm_test_dynamic_comparison),
 		cmocka_unit_test(soft_vm_test_dynamic_bitwise),
+
+		cmocka_unit_test(soft_vm_test_dpush_and_dpop),
 		#endif
 
 		#ifdef SOFT_ASM_TOKENIZER_TESTS
