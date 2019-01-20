@@ -6,8 +6,7 @@
 #include <stdint.h>
 
 struct soft_instr {
-	uint32_t opcode : 7;
-	uint32_t iflag : 1;
+	uint32_t opcode : 8;
 	uint32_t src : 4;
 	uint32_t dst : 4;
 	uint32_t imm : 16;
@@ -21,18 +20,22 @@ struct soft_instr {
 	X(halt), \
 	X(breakpoint), \
 	X(noop), \
-	X(syscall), \
+	X(int), \
  \
 	/** \
 	 * Data instruction thingies \
 	 * */ \
-	X(dloadi), \
-	X(dload), \
-	X(dstore), \
-	X(dmovi), \
-	X(dmov), \
-	X(dpush), \
-	X(dpop), \
+	X(loadi), \
+	X(load_dw), \
+	X(load_w), \
+	X(store_dw), \
+	X(store_w), \
+	X(mov), \
+	X(movi), \
+	X(push_dw), \
+	X(pop_dw), \
+	X(push_w), \
+	X(pop_w), \
 \
 	/** \
 	 * Arithmetic instructions \

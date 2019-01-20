@@ -1,7 +1,7 @@
 #include "vm/soft-vm.h"
 #include "vm/vm-test.h"
 
-void soft_vm_test_dstore(void ** state)
+void soft_vm_test_store_dw(void ** state)
 {
 	sval_t d = sval_from_double(23.45);
 	sval_t i = sval_from_int(17);
@@ -12,10 +12,10 @@ void soft_vm_test_dstore(void ** state)
 	};
 
 	struct soft_instr instructions[] = {
-		sinstr(dload, 1, 0, soft_rax, 0),
-		sinstr(dload, 1, 0, soft_rbx, 8),
-		sinstr(dstore, 0, soft_rax, soft_rbx, 0),
-		sinstr(halt, 0, 0, 0, 0),
+		sinstr(load_dw, 0, soft_rax, 0),
+		sinstr(load_dw, 0, soft_rbx, 8),
+		sinstr(store_dw, soft_rax, soft_rbx, 0),
+		sinstr(halt, 0, 0, 0),
 	};
 
 	struct soft_program test_program = {

@@ -18,21 +18,21 @@ void soft_vm_test_dynamic_comparison(void ** state)
 	};
 
 	struct soft_instr instructions[] = {
-		sinstr(dload, 1, 0, soft_rax, 0),
-		sinstr(dload, 1, 0, soft_rbx, 8),
-		sinstr(dload, 1, 0, soft_rcx, 16),
-		sinstr(dload, 1, 0, soft_rdx, 24),
-		sinstr(dcmp, 0, soft_rax, 0, soft_rax),
-		sinstr(breakpoint, 0, 0, 0, 0),
-		sinstr(dcmp, 0, soft_rax, 0, soft_rbx),
-		sinstr(breakpoint, 0, 0, 0, 0),
-		sinstr(dcmp, 0, soft_rax, 0, soft_rcx),
-		sinstr(breakpoint, 0, 0, 0, 0),
-		sinstr(dcmp, 0, soft_rax, 0, soft_rdx),
-		sinstr(breakpoint, 0, 0, 0, 0),
-		sinstr(dload, 1, 0, soft_rbx, 32),
-		sinstr(dcmp, 0, soft_rax, 0, soft_rbx),
-		sinstr(halt, 0, 0, 0, 0),
+		sinstr(load_dw, 0, soft_rax, 0),
+		sinstr(load_dw, 0, soft_rbx, 8),
+		sinstr(load_dw, 0, soft_rcx, 16),
+		sinstr(load_dw, 0, soft_rdx, 24),
+		sinstr(dcmp, soft_rax, 0, soft_rax),
+		sinstr(breakpoint, 0, 0, 0),
+		sinstr(dcmp, soft_rax, 0, soft_rbx),
+		sinstr(breakpoint, 0, 0, 0),
+		sinstr(dcmp, soft_rax, 0, soft_rcx),
+		sinstr(breakpoint, 0, 0, 0),
+		sinstr(dcmp, soft_rax, 0, soft_rdx),
+		sinstr(breakpoint, 0, 0, 0),
+		sinstr(load_dw, 0, soft_rbx, 32),
+		sinstr(dcmp, soft_rax, 0, soft_rbx),
+		sinstr(halt, 0, 0, 0),
 	};
 
 	struct soft_program test_program = {
