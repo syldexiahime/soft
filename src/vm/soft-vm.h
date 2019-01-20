@@ -15,8 +15,21 @@ struct soft_program {
 	struct soft_instr * instructions;
 };
 
+typedef uint64_t doubleword_t;
+typedef uint32_t word_t;
+typedef uint16_t halfword_t;
+typedef uint8_t  byte_t;
+
+union vm_register {
+	doubleword_t dw;
+	halfword_t   hw;
+	word_t       w;
+	byte_t       b;
+	sval_t       sval;
+};
+
 struct soft_vm {
-	union sval r[SOFT_VM_NUM_REGS];
+	union vm_register r[SOFT_VM_NUM_REGS];
 	struct soft_instr * ip;
 	bool zf;
 	bool sf;
@@ -31,6 +44,6 @@ void soft_vm_run_vm_debug(struct soft_vm * vm);
 
 #ifdef __GNUC__
 #define SOFT_VM_USE_COMPUTED_GOTO
-#endif
+#endif // __GNUC__
 
 #endif // SOFT_VM_H

@@ -4,8 +4,8 @@
 #include "soft-test.h"
 #include "vm/soft-vm.h"
 
-#define sinstr(opc, iflg, s, d, im) \
-	(struct soft_instr) { .opcode = soft_instr_##opc, .iflag = iflg, .src = s, .dst = d, .imm = im }
+#define sinstr(opc, s, d, im) \
+	(struct soft_instr) { .opcode = soft_instr_##opc, .src = s, .dst = d, .imm = im }
 
 struct soft_vm vm;
 
@@ -30,18 +30,18 @@ void soft_test_sval_arithmetic_string(void ** state);
 /**
  * Load instruction tests
  * */
-void soft_vm_test_dloadi(void ** state);
-void soft_vm_test_dload(void ** state);
+void soft_vm_test_load_dw(void ** state);
+void soft_vm_test_loadi(void ** state);
 
-void soft_vm_test_dstore(void ** state);
+void soft_vm_test_store_dw(void ** state);
 
-void soft_vm_test_dmovi(void **state);
-void soft_vm_test_dmov(void **state);
+void soft_vm_test_movi(void ** state);
+void soft_vm_test_mov(void ** state);
 
 void soft_vm_test_dynamic_arithmetic(void ** state);
 void soft_vm_test_dynamic_comparison(void ** state);
 void soft_vm_test_dynamic_bitwise(void ** state);
 
-void soft_vm_test_dpush_and_dpop(void **state);
+void soft_vm_test_push_dw_and_pop_dw(void ** state);
 
 #endif // _SOFT_VM_TEST_H

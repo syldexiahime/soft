@@ -5,18 +5,20 @@ enum SOFT_VM_REGISTERS _regs;
 void soft_vm_init_vm(struct soft_vm * vm)
 {
 	for (int i = 0; i < SOFT_VM_NUM_REGS; i ++) {
-		vm->r[i].as_bits = 0;
+		vm->r[i].hw = 0;
 	}
 	vm->zf = 0;
 	vm->sf = 0;
+	vm->ip = 0;
 }
 
 void soft_vm_load_program(struct soft_vm * vm, struct soft_program * program)
 {
+	soft_vm_init_vm(vm);
+
 	vm->ds = program->datastore;
 	vm->instructions = program->instructions;
 	vm->ip = vm->instructions;
-	soft_vm_init_vm(vm);
 }
 
 void soft_vm_run_vm(struct soft_vm * vm)
@@ -24,17 +26,17 @@ void soft_vm_run_vm(struct soft_vm * vm)
 
 #ifdef SOFT_VM_USE_COMPUTED_GOTO
 
-	#define X(opname) &&label_##opname
+#define X(opname) &&label_##opname
 	static void * jump_table[num_soft_instrs] = {
 		SOFT_INSTRUCTION_SET
 	};
-	#undef X
+#undef X
 
-	#define softvm_op(opname) label_##opname: ;
+#define softvm_op(opname) label_##opname: ;
 
 #else
 
-	#define softvm_op(opname) case soft_instr_##opname:
+#define softvm_op(opname) case soft_instr_##opname:
 
 #endif
 
@@ -70,43 +72,67 @@ void soft_vm_run_vm(struct soft_vm * vm)
 		softvm_op(noop)
 			goto increment_pc;
 
-		softvm_op(syscall)
+		softvm_op(int)
 			soft_vm_syscall(vm, instr);
 			goto increment_pc;
 
-		softvm_op(dloadi)
-			vm->r[instr.dst] = *((sval_t *) sval_to_pointer(vm->r[instr.src]));
+		softvm_op(loadi)
+			vm->r[instr.dst] = *((union vm_register *) sval_to_pointer(bitwise_cast(sval_t, union vm_register, vm->r[instr.src])));
 			goto increment_pc;
 
-		softvm_op(dload)
-			memcpy(&vm->r[instr.dst], &vm->ds[instr.imm], sizeof(sval_t));
+		softvm_op(load_dw)
+			memcpy(&vm->r[instr.dst], &vm->ds[instr.imm], sizeof(doubleword_t));
 			goto increment_pc;
 
-		softvm_op(dstore) {
-			sval_t * ptr = sval_to_pointer(vm->r[instr.dst]);
-			*ptr = vm->r[instr.src];
-			goto increment_pc;
-		}
-
-		softvm_op(dmov)
-			vm->r[instr.dst] = vm->r[(uint8_t) instr.imm];
+		softvm_op(load_w)
+			memcpy(&vm->r[instr.dst], &vm->ds[instr.imm], sizeof(word_t));
 			goto increment_pc;
 
-		softvm_op(dmovi)
-			vm->r[instr.dst] = sval_from_int(instr.imm);
-			goto increment_pc;
-
-		softvm_op(dpush) {
-			sval_t * ptr    = bitwise_cast(sval_t *, sval_t, vm->r[soft_rsp]);
-			*ptr            = vm->r[instr.src];
-			vm->r[soft_rsp] = bitwise_cast(sval_t, sval_t *, --ptr);
+		softvm_op(store_dw) {
+			doubleword_t * ptr = sval_to_pointer(bitwise_cast(sval_t, union vm_register, vm->r[instr.dst]));
+			*ptr = vm->r[instr.src].dw;
 			goto increment_pc;
 		}
 
-		softvm_op(dpop) {
-			sval_t * ptr     = bitwise_cast(sval_t *, sval_t, vm->r[soft_rsp]) + 1;
-			vm->r[instr.dst] = *ptr;
-			vm->r[soft_rsp]  = bitwise_cast(sval_t, sval_t *, ptr);
+		softvm_op(store_w) {
+			doubleword_t * ptr = sval_to_pointer(bitwise_cast(sval_t, union vm_register, vm->r[instr.dst]));
+			*ptr = vm->r[instr.src].w;
+			goto increment_pc;
+		}
+
+		softvm_op(mov)
+			vm->r[instr.dst] = vm->r[instr.imm];
+			goto increment_pc;
+
+		softvm_op(movi)
+			vm->r[instr.dst].dw = instr.imm;
+			goto increment_pc;
+
+		softvm_op(push_dw) {
+			doubleword_t * ptr = bitwise_cast(doubleword_t *, doubleword_t, vm->r[soft_rsp].dw);
+			*ptr               = vm->r[instr.src].dw;
+			vm->r[soft_rsp].dw = bitwise_cast(doubleword_t, doubleword_t *, --ptr);
+			goto increment_pc;
+		}
+
+		softvm_op(pop_dw) {
+			doubleword_t * ptr  = bitwise_cast(doubleword_t *, doubleword_t, vm->r[soft_rsp].dw) + 1;
+			vm->r[instr.dst].dw = *ptr;
+			vm->r[soft_rsp].dw  = bitwise_cast(doubleword_t, doubleword_t *, ptr);
+			goto increment_pc;
+		}
+
+		softvm_op(push_w) {
+			word_t * ptr       = bitwise_cast(word_t *, doubleword_t, vm->r[soft_rsp].dw);
+			*ptr               = vm->r[instr.src].w;
+			vm->r[soft_rsp].dw = bitwise_cast(doubleword_t, word_t *, --ptr);
+			goto increment_pc;
+		}
+
+		softvm_op(pop_w) {
+			word_t * ptr       = bitwise_cast(word_t *, doubleword_t, vm->r[soft_rsp].dw + 1);
+			vm->r[instr.dst].w = *ptr;
+			vm->r[soft_rsp].dw = bitwise_cast(doubleword_t, word_t *, ptr);
 			goto increment_pc;
 		}
 
@@ -115,40 +141,40 @@ void soft_vm_run_vm(struct soft_vm * vm)
 		 * */
 
 		softvm_op(dadd)
-			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], +, vm->r[instr.imm]);
+			sval_arithmetic(vm->r[instr.dst].sval, vm->r[instr.src].sval, +, vm->r[instr.imm].sval);
 			goto increment_pc;
 
 		softvm_op(dsub)
-			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], -, vm->r[instr.imm]);
+			sval_arithmetic(vm->r[instr.dst].sval, vm->r[instr.src].sval, -, vm->r[instr.imm].sval);
 			goto increment_pc;
 
 		softvm_op(dmul)
-			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], *, vm->r[instr.imm]);
+			sval_arithmetic(vm->r[instr.dst].sval, vm->r[instr.src].sval, *, vm->r[instr.imm].sval);
 			goto increment_pc;
 
 		softvm_op(ddiv)
-			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], /, vm->r[instr.imm]);
+			sval_arithmetic(vm->r[instr.dst].sval, vm->r[instr.src].sval, /, vm->r[instr.imm].sval);
 			goto increment_pc;
 
 		softvm_op(daddi)
-			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], +, sval_from_int(instr.imm));
+			sval_arithmetic(vm->r[instr.dst].sval, vm->r[instr.src].sval, +, sval_from_int(instr.imm));
 			goto increment_pc;
 
 		softvm_op(dsubi)
-			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], -, sval_from_int(instr.imm));
+			sval_arithmetic(vm->r[instr.dst].sval, vm->r[instr.src].sval, -, sval_from_int(instr.imm));
 			goto increment_pc;
 
 		softvm_op(dmuli)
-			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], *, sval_from_int(instr.imm));
+			sval_arithmetic(vm->r[instr.dst].sval, vm->r[instr.src].sval, *, sval_from_int(instr.imm));
 			goto increment_pc;
 
 		softvm_op(ddivi)
-			sval_arithmetic(vm->r[instr.dst], vm->r[instr.src], /, sval_from_int(instr.imm));
+			sval_arithmetic(vm->r[instr.dst].sval, vm->r[instr.src].sval, /, sval_from_int(instr.imm));
 			goto increment_pc;
 
 		softvm_op(dcmp) {
 			sval_t res;
-			sval_arithmetic(res, vm->r[instr.src], -, vm->r[instr.imm]);
+			sval_arithmetic(res, vm->r[instr.src].sval, -, vm->r[instr.imm].sval);
 
 			if (sval_is_double(res)) {
 				double d = sval_to_double(res);
@@ -169,27 +195,27 @@ void soft_vm_run_vm(struct soft_vm * vm)
 		}
 
 		softvm_op(dand)
-			vm->r[instr.dst] = sval_from_int(sval_cast_to_int(vm->r[instr.src]) & sval_cast_to_int(vm->r[instr.imm]));
+			vm->r[instr.dst].sval = sval_from_int(sval_cast_to_int(vm->r[instr.src].sval) & sval_cast_to_int(vm->r[instr.imm].sval));
 			goto increment_pc;
 
 		softvm_op(dor)
-			vm->r[instr.dst] = sval_from_int(sval_cast_to_int(vm->r[instr.src]) | sval_cast_to_int(vm->r[instr.imm]));
+			vm->r[instr.dst].sval = sval_from_int(sval_cast_to_int(vm->r[instr.src].sval) | sval_cast_to_int(vm->r[instr.imm].sval));
 			goto increment_pc;
 
 		softvm_op(dnot)
-			vm->r[instr.dst] = sval_from_int(~ sval_cast_to_int(vm->r[instr.src]));
+			vm->r[instr.dst].sval = sval_from_int(~ sval_cast_to_int(vm->r[instr.src].sval));
 			goto increment_pc;
 
 		softvm_op(dxor)
-			vm->r[instr.dst] = sval_from_int(sval_cast_to_int(vm->r[instr.src]) ^ sval_cast_to_int(vm->r[instr.imm]));
+			vm->r[instr.dst].sval = sval_from_int(sval_cast_to_int(vm->r[instr.src].sval) ^ sval_cast_to_int(vm->r[instr.imm].sval));
 			goto increment_pc;
 
 		softvm_op(dlshift)
-			vm->r[instr.dst] = sval_from_int(sval_cast_to_int(vm->r[instr.src]) << sval_cast_to_int(vm->r[instr.imm]));
+			vm->r[instr.dst].sval = sval_from_int(sval_cast_to_int(vm->r[instr.src].sval) << sval_cast_to_int(vm->r[instr.imm].sval));
 			goto increment_pc;
 
 		softvm_op(drshift)
-			vm->r[instr.dst] = sval_from_int(sval_cast_to_int(vm->r[instr.src]) >> sval_cast_to_int(vm->r[instr.imm]));
+			vm->r[instr.dst].sval = sval_from_int(sval_cast_to_int(vm->r[instr.src].sval) >> sval_cast_to_int(vm->r[instr.imm].sval));
 			goto increment_pc;
 
 		softvm_op(jmp)

@@ -18,18 +18,18 @@ void soft_vm_test_dynamic_arithmetic(void ** state)
 	};
 
 	struct soft_instr instructions[] = {
-		sinstr(dload, 1, 0, soft_rax, 0),
-		sinstr(dload, 1, 0, soft_rbx, 8),
-		sinstr(dload, 1, 0, soft_rcx, 16),
-		sinstr(dload, 1, 0, soft_rdx, 24),
-		sinstr(dadd, 0, soft_rax, soft_rdi, soft_rax),
-		sinstr(dadd, 0, soft_rax, soft_rsi, soft_rbx),
-		sinstr(dadd, 0, soft_rax, soft_rsp, soft_rcx),
-		sinstr(dadd, 0, soft_rax, soft_rbp, soft_rdx),
-		sinstr(breakpoint, 0, 0, 0, 0),
-		sinstr(dload, 0, 0, soft_rbx, 32),
-		sinstr(dadd, 0, soft_rax, soft_rdi, soft_rbx),
-		sinstr(halt, 0, 0, 0, 0),
+		sinstr(load_dw, 0, soft_rax, 0),
+		sinstr(load_dw, 0, soft_rbx, 8),
+		sinstr(load_dw, 0, soft_rcx, 16),
+		sinstr(load_dw, 0, soft_rdx, 24),
+		sinstr(dadd, soft_rax, soft_rdi, soft_rax),
+		sinstr(dadd, soft_rax, soft_rsi, soft_rbx),
+		sinstr(dadd, soft_rax, soft_rsp, soft_rcx),
+		sinstr(dadd, soft_rax, soft_rbp, soft_rdx),
+		sinstr(breakpoint, 0, 0, 0),
+		sinstr(load_dw, 0, soft_rbx, 32),
+		sinstr(dadd, soft_rax, soft_rdi, soft_rbx),
+		sinstr(halt, 0, 0, 0),
 	};
 
 	struct soft_program test_program = {
@@ -40,13 +40,13 @@ void soft_vm_test_dynamic_arithmetic(void ** state)
 	soft_vm_load_program(&vm, &test_program);
 	soft_vm_run_vm(&vm);
 
-	assert_true(sval_to_int(vm.r[soft_rdi]) == 34);
-	assert_true(sval_to_double(vm.r[soft_rsi]) == 29.3);
-	assert_true(sval_to_int(vm.r[soft_rsp]) == 90);
-	assert_true(sval_to_double(vm.r[soft_rbp]) == 71.32);
+	assert_true(sval_to_int(vm.r[soft_rdi].sval) == 34);
+	assert_true(sval_to_double(vm.r[soft_rsi].sval) == 29.3);
+	assert_true(sval_to_int(vm.r[soft_rsp].sval) == 90);
+	assert_true(sval_to_double(vm.r[soft_rbp].sval) == 71.32);
 
 	soft_vm_run_vm(&vm);
 
-	assert_true(sval_is_nan(vm.r[soft_rdi]));
+	assert_true(sval_is_nan(vm.r[soft_rdi].sval));
 }
 

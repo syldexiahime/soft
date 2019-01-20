@@ -1,14 +1,14 @@
 #include "vm/vm-test.h"
 
-void soft_vm_test_dload(void **state)
+void soft_vm_test_load_dw(void ** state)
 {
 	sval_t datastore[] = {
 		sval_from_int(17),
 	};
 
 	struct soft_instr instructions[] = {
-		sinstr(dload, 1, 0, soft_rax, 0),
-		sinstr(halt, 0, 0, 0, 0),
+		sinstr(load_dw, 0, soft_rax, 0),
+		sinstr(halt, 0, 0, 0),
 	};
 
 	struct soft_program test_program = {
@@ -19,10 +19,10 @@ void soft_vm_test_dload(void **state)
 	soft_vm_load_program(&vm, &test_program);
 	soft_vm_run_vm(&vm);
 
-	assert_true(sval_to_int(vm.r[soft_rax]) == 17);
+	assert_true(sval_to_int(vm.r[soft_rax].sval) == 17);
 }
 
-void soft_vm_test_dloadi(void **state)
+void soft_vm_test_loadi(void ** state)
 {
 	sval_t i = sval_from_int(27);
 
@@ -31,9 +31,9 @@ void soft_vm_test_dloadi(void **state)
 	};
 
 	struct soft_instr instructions[] = {
-		sinstr(dload, 1, 0, soft_rax, 0),
-		sinstr(dloadi, 0, soft_rax, soft_rbx, 0),
-		sinstr(halt, 0, 0, 0, 0),
+		sinstr(load_dw, 0, soft_rax, 0),
+		sinstr(loadi, soft_rax, soft_rbx, 0),
+		sinstr(halt, 0, 0, 0),
 	};
 
 	struct soft_program test_program = {
@@ -44,5 +44,5 @@ void soft_vm_test_dloadi(void **state)
 	soft_vm_load_program(&vm, &test_program);
 	soft_vm_run_vm(&vm);
 
-	assert_true(sval_to_int(vm.r[soft_rbx]) == 27);
+	assert_true(sval_to_int(vm.r[soft_rbx].sval) == 27);
 }
