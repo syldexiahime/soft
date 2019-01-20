@@ -43,17 +43,17 @@ int main(void) {
 		cmocka_unit_test(soft_test_sval_arithmetic_double),
 		cmocka_unit_test(soft_test_sval_arithmetic_string),
 
-		cmocka_unit_test(soft_vm_test_dloadi),
-		cmocka_unit_test(soft_vm_test_dload),
-		cmocka_unit_test(soft_vm_test_dstore),
-		cmocka_unit_test(soft_vm_test_dmovi),
-		cmocka_unit_test(soft_vm_test_dmov),
+		cmocka_unit_test(soft_vm_test_load_dw),
+		cmocka_unit_test(soft_vm_test_loadi),
+		cmocka_unit_test(soft_vm_test_store_dw),
+		cmocka_unit_test(soft_vm_test_movi),
+		cmocka_unit_test(soft_vm_test_mov),
 
 		cmocka_unit_test(soft_vm_test_dynamic_arithmetic),
 		cmocka_unit_test(soft_vm_test_dynamic_comparison),
 		cmocka_unit_test(soft_vm_test_dynamic_bitwise),
 
-		cmocka_unit_test(soft_vm_test_dpush_and_dpop),
+		cmocka_unit_test(soft_vm_test_push_dw_and_pop_dw),
 		#endif
 
 		#ifdef SOFT_ASM_TOKENIZER_TESTS
@@ -62,6 +62,11 @@ int main(void) {
 		cmocka_unit_test(soft_asm_tokenizer_test_read_number),
 		cmocka_unit_test(soft_asm_tokenizer_test_read_symbol),
 		cmocka_unit_test(soft_asm_tokenizer_test_skip_comment),
+		#endif
+
+		#ifdef SOFT_PREPROCESSOR_TESTS
+		cmocka_unit_test(soft_preprocessor_test_parse_macro_args),
+		cmocka_unit_test(soft_preprocessor_test_build_macro),
 		#endif
 	};
 
