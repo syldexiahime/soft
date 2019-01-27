@@ -12,17 +12,26 @@ TEST_FILES = tests/**/*.c
 TEST_LIBS = -lcmocka
 TEST_HEADER_DIRS = -I'tests'
 # TEST_FLAGS = -fprofile-arcs -ftest-coverage
+COVERAGE_FLAGS = -fprofile-instr-generate -fcoverage-mapping
 
 LINT_FLAGS = -fsyntax-only -Wall -Wextra
 
 all:
-	${CC} ${MAIN} ${SRC_FILES} ${CC_FLAGS} ${HEADER_DIRS} -o soft
+	${CC} ${MAIN} ${SRC_FILES} ${CC_FLAGS} ${HEADER_DIRS} -o build/soft
 
 test:
 	${CC} ${TEST_MAIN} ${SRC_FILES} ${TEST_FILES} ${CC_FLAGS} \
 	${HEADER_DIRS} ${TEST_HEADER_DIRS} ${TEST_FLAGS} ${TEST_LIBS} \
-	 -o soft-tests
-	./soft-tests
+	 -o build/soft-tests
+	./build/soft-tests
+
+coverage:
+	${CC} ${TEST_MAIN} ${SRC_FILES} ${TEST_FILES} ${CC_FLAGS} \
+	${HEADER_DIRS} ${TEST_HEADER_DIRS} ${TEST_FLAGS} ${TEST_LIBS} \
+	${COVERAGE_FLAGS} -o build/soft-coverage
+	LLVM_PROFILE_FILE="build/soft.profraw" ./build/soft-coverage
+	llvm-profdata merge -sparse build/soft.profraw -o build/soft.profdata
+	llvm-cov report ./build/soft-coverage -instr-profile=build/soft.profdata
 
 lint:
 	${CC} ${MAIN} ${SRC_FILES} ${CC_FLAGS} ${LINT_FLAGS} ${HEADER_DIRS}
