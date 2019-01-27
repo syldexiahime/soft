@@ -33,8 +33,8 @@ bool is_soft_asm_register(char * word)
 
 	for (size_t i = len + 1; i--;) lword[i] = tolower(word[i]);
 
-	for (size_t i = 0; i < num_soft_asm_registers; i++) {
-		if (strcmp(lword, soft_asm_registers[i]) == 0) return true;
+	for (size_t i = 0; i < num_soft_vm_registers; i++) {
+		if (strcmp(lword, soft_vm_registers[i]) == 0) return true;
 	}
 
 	return false;

@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "assembler/keywords.h"
+#include "vm/registers.h"
 #include "utils/charstream.h"
 
 enum soft_asm_token_types {
