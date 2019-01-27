@@ -12,7 +12,6 @@ struct soft_instr {
 	uint32_t imm : 16;
 };
 
-
 #define SOFT_INSTRUCTION_SET \
 	/** \
 	 * Misc. instructions \
@@ -67,6 +66,10 @@ struct soft_instr {
 	X(jmp), \
 	X(jmpz), \
 	X(jmpnz), \
+	X(jmpgt), \
+	X(jmpgte), \
+	X(jmplt), \
+	X(jmplte), \
 \
 	/** \
 	 * Cast instructions \

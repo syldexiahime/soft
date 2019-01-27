@@ -44,4 +44,12 @@ void soft_vm_test_dynamic_bitwise(void ** state);
 
 void soft_vm_test_push_dw_and_pop_dw(void ** state);
 
+void soft_vm_test_jmp(void ** state);
+void soft_vm_test_jmpz(void ** state);
+void soft_vm_test_jmpnz(void ** state);
+void soft_vm_test_jmpgt(void ** state);
+void soft_vm_test_jmpgte(void ** state);
+void soft_vm_test_jmplt(void ** state);
+void soft_vm_test_jmplte(void ** state);
+
 #endif // _SOFT_VM_TEST_H

@@ -219,15 +219,37 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			goto increment_pc;
 
 		softvm_op(jmp)
-			// TODO
+			vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
 			goto start;
 
 		softvm_op(jmpz)
-			// TODO
+			if (vm->zf)
+				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
 			goto start;
 
 		softvm_op(jmpnz)
-			// TODO
+			if (!vm->zf)
+				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+			goto start;
+
+		softvm_op(jmpgt)
+			if (!vm->zf && !vm->sf)
+				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+			goto start;
+
+		softvm_op(jmpgte)
+			if (vm->zf || !vm->sf)
+				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+			goto start;
+
+		softvm_op(jmplt)
+			if (!vm->zf && vm->sf)
+				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+			goto start;
+
+		softvm_op(jmplte)
+			if (vm->zf || vm->sf)
+				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
 			goto start;
 
 		softvm_op(castint32)
