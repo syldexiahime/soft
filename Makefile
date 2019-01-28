@@ -1,37 +1,29 @@
-.PHONY: all test clean
+.PHONY: all dev test clean
 
-CC = clang
-CC_FLAGS = -std=c99
-HEADER_DIRS = -I'src'
+BUILD_DIR = build
+BUILD_FLAGS =
+DEV_FLAGS = BUILD_TESTS=1
 
-MAIN = src/soft.c
-SRC_FILES = src/**/*.c
+ifneq (${BUILD_FLAGS},)
+	_BUILD_FLAGS = -D ${BUILD_FLAGS}
+endif
 
-TEST_MAIN = tests/soft-test.c
-TEST_FILES = tests/**/*.c
-TEST_LIBS = -lcmocka
-TEST_HEADER_DIRS = -I'tests'
-# TEST_FLAGS = -fprofile-arcs -ftest-coverage
-COVERAGE_FLAGS = -fprofile-instr-generate -fcoverage-mapping
-
-LINT_FLAGS = -fsyntax-only -Wall -Wextra
+ifneq (${BUILD_FLAGS}${DEV_FLAGS},)
+	_DEV_FLAGS = -D ${BUILD_FLAGS} ${DEV_FLAGS}
+endif
 
 all:
-	${CC} ${MAIN} ${SRC_FILES} ${CC_FLAGS} ${HEADER_DIRS} -o build/soft
+	(mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR} && cmake ${_BUILD_FLAGS} .. && make)
+
+dev:
+	(mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR} && cmake ${_DEV_FLAGS} .. && make)
 
 test:
-	${CC} ${TEST_MAIN} ${SRC_FILES} ${TEST_FILES} ${CC_FLAGS} \
-	${HEADER_DIRS} ${TEST_HEADER_DIRS} ${TEST_FLAGS} ${TEST_LIBS} \
-	 -o build/soft-tests
-	./build/soft-tests
+	make -C ${BUILD_DIR} test
 
 coverage:
-	${CC} ${TEST_MAIN} ${SRC_FILES} ${TEST_FILES} ${CC_FLAGS} \
-	${HEADER_DIRS} ${TEST_HEADER_DIRS} ${TEST_FLAGS} ${TEST_LIBS} \
-	${COVERAGE_FLAGS} -o build/soft-coverage
-	LLVM_PROFILE_FILE="build/soft.profraw" ./build/soft-coverage
-	llvm-profdata merge -sparse build/soft.profraw -o build/soft.profdata
-	llvm-cov report ./build/soft-coverage -instr-profile=build/soft.profdata
+	make -C ${BUILD_DIR} coverage
 
-lint:
-	${CC} ${MAIN} ${SRC_FILES} ${CC_FLAGS} ${LINT_FLAGS} ${HEADER_DIRS}
+clean:
+	rm -r ${BUILD_DIR}
+
