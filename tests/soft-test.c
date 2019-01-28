@@ -7,13 +7,6 @@ int main(void) {
 	const struct CMUnitTest tests[] = {
 
 		#ifdef SOFT_UTILS_TESTS
-		cmocka_unit_test(soft_charstream_test_peek),
-		cmocka_unit_test(soft_charstream_test_consume),
-		cmocka_unit_test(soft_charstream_test_eof),
-		cmocka_unit_test(soft_charstream_test_expect),
-		cmocka_unit_test(soft_charstream_test_skip),
-		cmocka_unit_test(soft_charstream_test_read_while),
-
 		cmocka_unit_test(soft_test_str_replace_at),
 
 		cmocka_unit_test(soft_test_parse_numbers),

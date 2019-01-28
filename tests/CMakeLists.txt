@@ -11,15 +11,15 @@ if (CMAKE_C_COMPILER_ID MATCHES "Clang")
 		SET(XCRUN xcrun)
 	endif()
 
-	add_custom_target(test COMMAND sh -c "LLVM_PROFILE_FILE='soft.profraw' ./soft-test")
+	add_custom_target(test sh -c "LLVM_PROFILE_FILE='soft.profraw' ./soft-test")
 	add_custom_target(profdata sh -c "${XCRUN} llvm-profdata merge -sparse soft.profraw -o soft.profdata")
 	add_custom_target(coverage DEPENDS profdata COMMAND sh -c "${XCRUN} llvm-cov show ./soft-test -instr-profile=soft.profdata | sed '/^\\/.*\\/tests\\/.*:$/,/^$/d'" VERBATIM)
 elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
 	SET(COVERAGE_COMPILE_FLAGS -fprofile-arcs -ftest-coverage)
 	SET(COVERAGE_LINK_FLAGS    -lgcov)
 
-	add_custom_target(test COMMAND sh -c "./soft-test")
-	add_custom_target(coverage COMMAND sh -c "gcov ./soft-test")
+	add_custom_target(test sh -c "./soft-test")
+	add_custom_target(coverage sh -c "gcov ./soft-test")
 endif()
 
 add_executable(soft-test soft-test.c ${SOURCES} ${HEADERS} ${TEST_SOURCES} ${TEST_HEADERS})
