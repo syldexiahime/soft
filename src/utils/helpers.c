@@ -10,14 +10,14 @@ inline char * int_to_str(int i)       { char * b = smalloc(snprintf(NULL, 0, "%d
 inline char * float_to_str(float f)   { char * b = smalloc(snprintf(NULL, 0, "%f", f)); sprintf(b, "%f", f); return b; }
 inline char * double_to_str(double d) { char * b = smalloc(snprintf(NULL, 0, "%f", d)); sprintf(b, "%f", d); return b; }
 
-inline bool ishex(char c) { return c == 'a' || c == 'b' || c == 'c' || c == 'd' || c == 'e' || c == 'f' || isnumber(c); }
-inline bool isoct(char c) { return c != '8' && c != '9' && isnumber(c); }
+inline bool ishex(char c) { return c == 'a' || c == 'b' || c == 'c' || c == 'd' || c == 'e' || c == 'f' || isdigit(c); }
+inline bool isoct(char c) { return c != '8' && c != '9' && isdigit(c); }
 inline bool isbin(char c) { return c == '0' || c == '1'; }
 
 inline bool str_is_int(char * str)
 {
 	for (size_t i = 0; str[i] != '\0'; i++)
-		if (!isnumber(str[i])) return false;
+		if (!isdigit(str[i])) return false;
 	return true;
 }
 
@@ -30,7 +30,7 @@ inline bool str_is_double(char * str)
 			b = true;
 			continue;
 		}
-		if (!isnumber(str[i])) return false;
+		if (!isdigit(str[i])) return false;
 	}
 
 	return b;
