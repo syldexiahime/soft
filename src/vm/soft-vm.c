@@ -81,11 +81,11 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			goto increment_pc;
 
 		softvm_op(load_dw)
-			memcpy(&vm->r[instr.dst], &vm->ds[instr.imm], sizeof(doubleword_t));
+			vm->r[instr.dst].dw = *(doubleword_t *) (vm->ds + instr.imm);
 			goto increment_pc;
 
 		softvm_op(load_w)
-			memcpy(&vm->r[instr.dst], &vm->ds[instr.imm], sizeof(word_t));
+			vm->r[instr.dst].w = *(word_t *) (vm->ds + instr.imm);
 			goto increment_pc;
 
 		softvm_op(store_dw) {
@@ -109,28 +109,28 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			goto increment_pc;
 
 		softvm_op(push_dw) {
-			doubleword_t * ptr = bitwise_cast(doubleword_t *, doubleword_t, vm->r[soft_rsp].dw);
+			doubleword_t * ptr = (doubleword_t *) vm->r[soft_rsp].dw;
 			*ptr               = vm->r[instr.src].dw;
 			vm->r[soft_rsp].dw = bitwise_cast(doubleword_t, doubleword_t *, --ptr);
 			goto increment_pc;
 		}
 
 		softvm_op(pop_dw) {
-			doubleword_t * ptr  = bitwise_cast(doubleword_t *, doubleword_t, vm->r[soft_rsp].dw) + 1;
+			doubleword_t * ptr  = ((doubleword_t *) vm->r[soft_rsp].dw) + 1;
 			vm->r[instr.dst].dw = *ptr;
 			vm->r[soft_rsp].dw  = bitwise_cast(doubleword_t, doubleword_t *, ptr);
 			goto increment_pc;
 		}
 
 		softvm_op(push_w) {
-			word_t * ptr       = bitwise_cast(word_t *, doubleword_t, vm->r[soft_rsp].dw);
+			word_t * ptr       = (word_t *) vm->r[soft_rsp].w;
 			*ptr               = vm->r[instr.src].w;
 			vm->r[soft_rsp].dw = bitwise_cast(doubleword_t, word_t *, --ptr);
 			goto increment_pc;
 		}
 
 		softvm_op(pop_w) {
-			word_t * ptr       = bitwise_cast(word_t *, doubleword_t, vm->r[soft_rsp].dw + 1);
+			word_t * ptr       = ((word_t *) vm->r[soft_rsp].w) + 1;
 			vm->r[instr.dst].w = *ptr;
 			vm->r[soft_rsp].dw = bitwise_cast(doubleword_t, word_t *, ptr);
 			goto increment_pc;
