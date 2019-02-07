@@ -7,10 +7,13 @@ pipeline:
 
   test:
     image: syldexia/ubuntu-clang:latest
-    pull: true
-    environment:
-      CODECOV_TOKEN:
-        from_secret: codecov_token
+    commands:
+      - make dev
+      - make test
+
+  coverage:
+    image: syldexia/ubuntu-clang:latest
+    secrets: [ codecov_token ]
     commands:
       - (mkdir -p build && cd build && cmake -D BUILD_TESTS=1 -D TEST_COVERAGE=1 .. && make)
       - make test
