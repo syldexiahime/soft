@@ -17,6 +17,6 @@ pipeline:
     commands:
       - (mkdir -p build && cd build && cmake -D BUILD_TESTS=1 -D TEST_COVERAGE=1 .. && make)
       - make test
-      - make coverage | sed '1d;$d' > build/coverage.txt
+      - make coverage | sed '/^Built/d;/^Scanning/d;$d' > build/coverage.txt
       - bash -c "bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN"
 
