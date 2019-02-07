@@ -1,0 +1,2 @@
+# soft
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f76cea5d21a94d9990b1e140558296af)](https://app.codacy.com/app/syldexiahime/soft?utm_source=github.com&utm_medium=referral&utm_content=syldexiahime/soft&utm_campaign=Badge_Grade_Settings)
