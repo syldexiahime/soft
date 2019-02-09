@@ -1,4 +1,4 @@
-.PHONY: all dev test clean
+.PHONY: all dev test check test-verbose clean
 
 BUILD_DIR = build
 BUILD_FLAGS =
@@ -26,12 +26,17 @@ dev:
 	@(mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR} && cmake ${_DEV_FLAGS} .. && make --no-print-directory)
 
 test:
-	@grep -q BUILD_TESTS:BOOL=1 "${BUILD_DIR}/CMakeCache.txt" || (mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR} && cmake ${_DEV_FLAGS} .. && make)
-	make ${MAKE_FLAGS} test
+	@make ${MAKE_FLAGS} test
+
+check:
+	@make ${MAKE_FLAGS} check
+
+test-verbose:
+	@make ${MAKE_FLAGS} test-verbose
 
 coverage:
 	@grep -q TEST_COVERAGE:BOOL=1 "${BUILD_DIR}/CMakeCache.txt" || (mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR} && cmake ${_COVERAGE_FLAGS} .. && make)
-	@test -f "${BUILD_DIR}/tests/soft.profraw" || make ${MAKE_FLAGS} test
+	@test "$$(find ${BUILD_DIR}/tests/ -name '*.profraw' -print -quit)" || make ${MAKE_FLAGS} test
 	@make ${MAKE_FLAGS} coverage
 
 clean:
