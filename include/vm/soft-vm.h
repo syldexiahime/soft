@@ -42,8 +42,10 @@ void soft_vm_load_program(struct soft_vm * vm, struct soft_program * program);
 void soft_vm_run_vm(struct soft_vm * vm);
 void soft_vm_run_vm_debug(struct soft_vm * vm);
 
-#ifdef __GNUC__
-#define SOFT_VM_USE_COMPUTED_GOTO
+#if __GNUC__
+#ifndef SOFT_VM_USE_COMPUTED_GOTO
+#	define SOFT_VM_USE_COMPUTED_GOTO 1
+#endif // SOFT_VM_USE_COMPUTED_GOTO
 #endif // __GNUC__
 
 #endif // SOFT_VM_H

@@ -24,7 +24,7 @@ void soft_vm_load_program(struct soft_vm * vm, struct soft_program * program)
 void soft_vm_run_vm(struct soft_vm * vm)
 {
 
-#ifdef SOFT_VM_USE_COMPUTED_GOTO
+#if SOFT_VM_USE_COMPUTED_GOTO
 
 #define X(opname) &&label_##opname
 	static void * jump_table[num_soft_instrs] = {
@@ -52,7 +52,7 @@ void soft_vm_run_vm(struct soft_vm * vm)
 
 		instr = *vm->ip;
 
-#ifdef SOFT_VM_USE_COMPUTED_GOTO
+#if SOFT_VM_USE_COMPUTED_GOTO
 
 	goto * jump_table[instr.opcode];
 
@@ -261,7 +261,7 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			goto increment_pc;
 
 
-#ifndef SOFT_VM_USE_COMPUTED_GOTO
+#if !SOFT_VM_USE_COMPUTED_GOTO
 
 	}
 
