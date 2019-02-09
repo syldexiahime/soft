@@ -9,14 +9,12 @@ pipeline:
     image: syldexia/ubuntu-clang:latest
     commands:
       - make dev
-      - make test
+      - make test-verbose
 
   coverage:
     image: syldexia/ubuntu-clang:latest
     secrets: [ codecov_token ]
     commands:
-      - (mkdir -p build && cd build && cmake -D BUILD_TESTS=1 -D TEST_COVERAGE=1 .. && make)
-      - make test
-      - make coverage | sed '/^Built/d;/^Scanning/d;$d' > build/coverage.txt
+      - make coverage
       - bash -c "bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN"
 
