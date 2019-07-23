@@ -19,4 +19,11 @@ void soft_test_str_is_number(void ** state);
 
 void soft_test_tagged_pointers(void ** state);
 
+void soft_test_charstream_peek(void ** sate);
+void soft_test_charstream_consume(void ** sate);
+void soft_test_charstream_eof(void ** sate);
+void soft_test_charstream_expect(void ** sate);
+void soft_test_charstream_skip(void ** sate);
+void soft_test_charstream_read_while(void ** sate);
+
 #endif // _SOFT_UTILS_TEST_H

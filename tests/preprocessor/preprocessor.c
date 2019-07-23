@@ -26,11 +26,17 @@ void soft_preprocessor_test_build_macro(void ** state)
 	assert_true(strcmp(macro, "Hello World!") == 0);
 }
 
-void soft_preprocessor_test_replace_macro(void ** state)
+void soft_preprocessor_test_define_macro(void ** state)
 {
 	preprocessor = soft_preprocessor_init();
-	soft_charstream_init("ello Wor");
-	soft_macro_args * args = soft_preprocessor_parse_macro_args();
-	char * macro = soft_preprocessor_build_macro("H%1 %2ld!", args);
-	assert_true(strcmp(macro, "Hello World!") == 0);
+	soft_charstream_init("maca\nma\ncro\n%endmacro");
+
+	char * buf = malloc(256 * sizeof(char));
+	soft_preprocessor_define_macro(buf);
+
+	soft_macro * macro = preprocessor->macros->macro_array[0];
+
+	assert_true(macro != NULL);
+	assert_true(strcmp(macro->name, "maca") == 0);
+	assert_true(strcmp(macro->body, "\nma\ncro\n") == 0);
 }

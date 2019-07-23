@@ -28,7 +28,7 @@ typedef struct {
 } soft_macros;
 
 typedef struct {
-	soft_macros *   macros;
+	soft_macros * macros;
 	struct soft_compiler_warnings * warnings;
 } soft_preprocessor;
 
