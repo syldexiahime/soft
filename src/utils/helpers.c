@@ -6,7 +6,7 @@ inline int    parse_oct(char * s)    {    int n; sscanf(s, "%o",  &n); return n;
 inline float  parse_float(char * s)  {  float n; sscanf(s, "%f",  &n); return n; }
 inline double parse_double(char * s) { double n; sscanf(s, "%lf", &n); return n; }
 
-inline char * int_to_str(int i)       { char * b = smalloc(snprintf(NULL, 0, "%d", i)); sprintf(b, "%d", i);     return b; }
+inline char * int_to_str(int i)       { char * b = smalloc(snprintf(NULL, 0, "%d", i)); sprintf(b, "%d", i); return b; }
 inline char * float_to_str(float f)   { char * b = smalloc(snprintf(NULL, 0, "%f", f)); sprintf(b, "%f", f); return b; }
 inline char * double_to_str(double d) { char * b = smalloc(snprintf(NULL, 0, "%f", d)); sprintf(b, "%f", d); return b; }
 

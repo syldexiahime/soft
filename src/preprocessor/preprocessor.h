@@ -33,6 +33,6 @@ typedef struct {
 } soft_preprocessor;
 
 soft_preprocessor * soft_preprocessor_init();
-char * soft_asm_preprocess(char * buffer);
+char * soft_preprocessor_preprocess(char * buffer);
 
 #endif // _SOFT_PREPROCESSOR_H
