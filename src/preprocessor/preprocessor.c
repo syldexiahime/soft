@@ -1,13 +1,13 @@
 #include "preprocessor/preprocessor.h"
 
-void soft_preprocessor_read_directive(char * nbuf);
-void soft_preprocessor_replace_macro(soft_macro * macro);
+void soft_preprocessor_read_directive (char * nbuf);
+void soft_preprocessor_replace_macro (soft_macro * macro);
 
-bool is_soft_preprocessor_word(char c, size_t i) { return i == 0 ? isalpha(c) : isalnum(c) || c == '_' || c == '$'; }
+bool is_soft_preprocessor_word (char c, size_t i) { return i == 0 ? isalpha(c) : isalnum(c) || c == '_' || c == '$'; }
 
 soft_preprocessor * preprocessor;
 
-soft_preprocessor * soft_preprocessor_init()
+soft_preprocessor * soft_preprocessor_init ()
 {
 	if (!preprocessor) preprocessor = calloc(1, sizeof(soft_preprocessor));
 	if (preprocessor->warnings) free(preprocessor->warnings);
@@ -26,7 +26,7 @@ soft_preprocessor * soft_preprocessor_init()
 	return preprocessor;
 }
 
-void soft_preprocessor_warn(char * filename, char * message)
+void soft_preprocessor_warn (char * filename, char * message)
 {
 	struct soft_compiler_warnings * w = preprocessor->warnings;
 	if (w->length >= w->size) {
@@ -36,7 +36,7 @@ void soft_preprocessor_warn(char * filename, char * message)
 	w->warnings_array[w->length++] = soft_charstream_warn(filename, message);
 }
 
-soft_macro_args * soft_preprocessor_parse_macro_args()
+soft_macro_args * soft_preprocessor_parse_macro_args ()
 {
 	soft_macro_args * args = malloc(sizeof(soft_macro_args));
 	args->length = 0; args->size = 8;
@@ -58,7 +58,7 @@ soft_macro_args * soft_preprocessor_parse_macro_args()
 	return args;
 }
 
-char * soft_preprocessor_build_macro(char * macro, soft_macro_args * arguments)
+char * soft_preprocessor_build_macro (char * macro, soft_macro_args * arguments)
 {
 	size_t argslen = 0;
 
@@ -109,7 +109,7 @@ char * soft_preprocessor_build_macro(char * macro, soft_macro_args * arguments)
 	return buf;
 }
 
-soft_macro * soft_preprocessor_get_macro(char * word)
+soft_macro * soft_preprocessor_get_macro (char * word)
 {
 	soft_macro ** macros = preprocessor->macros->macro_array;
 	for (size_t i = 0; i < preprocessor->macros->length; i++) {
@@ -120,7 +120,7 @@ soft_macro * soft_preprocessor_get_macro(char * word)
 	return NULL;
 }
 
-void soft_preprocessor_define_macro(char * nbuf)
+void soft_preprocessor_define_macro (char * nbuf)
 {
 	size_t i    = 0;
 	size_t pos  = 0;
@@ -166,6 +166,8 @@ void soft_preprocessor_define_macro(char * nbuf)
 			if (macro != NULL) {
 				soft_preprocessor_replace_macro(macro);
 				macro = NULL;
+
+				free(str);
 			}
 			else {
 				goto concat_buf;
@@ -241,7 +243,7 @@ void soft_preprocessor_define_macro(char * nbuf)
 	macros->macro_array[macros->length - 1] = macro;
 }
 
-void soft_preprocessor_replace_macro(soft_macro * macro)
+void soft_preprocessor_replace_macro (soft_macro * macro)
 {
 	char * buffer = soft_charstream_get_buffer();
 	size_t buffer_size = strlen(buffer);
@@ -260,7 +262,7 @@ void soft_preprocessor_replace_macro(soft_macro * macro)
 	soft_charstream_set_buffer(buffer);
 }
 
-void soft_preprocessor_read_directive(char * nbuf)
+void soft_preprocessor_read_directive (char * nbuf)
 {
 	soft_charstream_skip();
 
@@ -272,12 +274,14 @@ void soft_preprocessor_read_directive(char * nbuf)
 	soft_preprocessor_warn("filename", "Unkown preprocessor directive");
 }
 
-char * soft_asm_preprocess(char * buffer)
+char * soft_preprocessor_preprocess (char * buffer)
 {
 	int i = 0;
 	int size = 256;
 	char * buf = malloc(size);
 	soft_charstream_init(buffer);
+
+	buf[0] = '\0';
 
 	bool in_quote = false;
 
@@ -293,7 +297,34 @@ char * soft_asm_preprocess(char * buffer)
 		if (p == ';') while (soft_charstream_peek(p) != '\n') soft_charstream_skip();
 		if (p == '%') soft_preprocessor_read_directive(buf);
 
-		buf[i++] = soft_charstream_consume();
+		if (is_soft_preprocessor_word(p, 0)) {
+			char * str = soft_charstream_read_whilei(is_soft_preprocessor_word);
+
+			soft_macro * macro = soft_preprocessor_get_macro(str);
+			if (macro != NULL) {
+				soft_preprocessor_replace_macro(macro);
+			}
+			else {
+				size_t len = strlen(str);
+
+				len = strlen(str);
+				i = i + len;
+				if (i + 1 >= size)
+					buf = realloc(buf, (size += (i * 1.5) + 1));
+
+				strcat(buf, str);
+			}
+
+			macro = NULL;
+			free(str);
+		}
+		else {
+			buf[i++] = soft_charstream_consume();
+		}
+	}
+
+	if (buf[i++] != '\0') {
+		buf[i] = '\0';
 	}
 
 	return buf;
