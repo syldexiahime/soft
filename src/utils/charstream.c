@@ -2,15 +2,16 @@
 
 struct soft_charstream * charstream;
 
-inline void   soft_charstream_set_buffer(char * buffer) { charstream->buffer = buffer; }
-inline char * soft_charstream_get_buffer() { return charstream->buffer; }
+inline void   soft_charstream_set_buffer (char * buffer) { charstream->buffer = buffer; }
+inline char * soft_charstream_get_buffer () { return charstream->buffer; }
 
-inline void   soft_charstream_set_pos(size_t i) { charstream->index = i; }
-inline size_t soft_charstream_get_pos() { return charstream->index; }
+inline void   soft_charstream_set_pos (size_t i) { charstream->index = i; }
+inline size_t soft_charstream_get_pos () { return charstream->index; }
 
-struct soft_charstream * soft_charstream_init(char * buffer)
+struct soft_charstream * soft_charstream_init (char * buffer)
 {
-	if (!charstream) charstream = malloc(sizeof(struct soft_charstream));
+	if (!charstream)
+		charstream = malloc(sizeof(struct soft_charstream));
 
 	soft_charstream_set_buffer(buffer);
 	charstream->index  = 0;
@@ -20,22 +21,22 @@ struct soft_charstream * soft_charstream_init(char * buffer)
 	return charstream;
 }
 
-inline char soft_charstream_peek()    { return charstream->buffer[charstream->index];     }
-inline bool soft_charstream_eof()     { return soft_charstream_peek() == '\0';            }
-inline void soft_charstream_skip()    { if (!soft_charstream_eof()) charstream->index++;  }
-inline char soft_charstream_consume() { char c = soft_charstream_peek(); soft_charstream_skip(); return c; }
+inline char soft_charstream_peek ()    { return charstream->buffer[charstream->index];     }
+inline bool soft_charstream_eof ()     { return soft_charstream_peek() == '\0';            }
+inline void soft_charstream_skip ()    { if (!soft_charstream_eof()) charstream->index++;  }
+inline char soft_charstream_consume () { char c = soft_charstream_peek(); soft_charstream_skip(); return c; }
 
-bool soft_charstream_expect(bool (*eval_function)(char))
+bool soft_charstream_expect (bool (*eval_function)(char))
 {
 	return eval_function(soft_charstream_peek());
 }
 
-bool soft_charstream_expect_at_pos(bool (*eval_function)(char, size_t), int index)
+bool soft_charstream_expect_at_pos (bool (*eval_function)(char, size_t), int index)
 {
 	return eval_function(soft_charstream_peek(), index);
 }
 
-char * soft_charstream_read_while(bool (*eval_function)(char))
+char * soft_charstream_read_while (bool (*eval_function)(char))
 {
 	uint16_t size = 16;
 	char * buffer = malloc(size);
@@ -54,7 +55,7 @@ char * soft_charstream_read_while(bool (*eval_function)(char))
 	return buffer;
 }
 
-char * soft_charstream_read_whilei(bool (*eval_function)(char, size_t))
+char * soft_charstream_read_whilei (bool (*eval_function)(char, size_t))
 {
 	uint16_t size = 16;
 	char * buffer = malloc(size);
@@ -73,7 +74,7 @@ char * soft_charstream_read_whilei(bool (*eval_function)(char, size_t))
 	return buffer;
 }
 
-char * soft_charstream_read_quote()
+char * soft_charstream_read_quote ()
 {
 	uint16_t size = 16;
 	char * buffer = malloc(size);
@@ -100,7 +101,7 @@ char * soft_charstream_read_quote()
 	return buffer;
 }
 
-void soft_charstream_skip_whitespace()
+void soft_charstream_skip_whitespace ()
 {
 	while (!soft_charstream_eof()) {
 		char p = soft_charstream_peek();
@@ -112,7 +113,7 @@ void soft_charstream_skip_whitespace()
 	}
 }
 
-void soft_charstream_skip_inline_whitespace()
+void soft_charstream_skip_inline_whitespace ()
 {
 	while (!soft_charstream_eof()) {
 		char p = soft_charstream_peek();
@@ -124,7 +125,7 @@ void soft_charstream_skip_inline_whitespace()
 	}
 }
 
-void soft_charstream_skip_to_next_line()
+void soft_charstream_skip_to_next_line ()
 {
 	while (!soft_charstream_eof()) {
 		char next = soft_charstream_peek();
@@ -133,14 +134,14 @@ void soft_charstream_skip_to_next_line()
 	}
 }
 
-char * soft_charstream_warn(char * filename, char * message)
+char * soft_charstream_warn (char * filename, char * message)
 {
 	char * warnstr = malloc(sizeof(filename) + sizeof(message) + 32);
 	sprintf(warnstr, "%s:%d:%d: error: %s", filename, charstream->line, charstream->column, message);
 	return warnstr;
 }
 
-void soft_charstream_panic(char * filename, char * message)
+void soft_charstream_panic (char * filename, char * message)
 {
 	printf("%s:%d:%d: error: %s", filename, charstream->line, charstream->column, message);
 	exit(1);

@@ -2,9 +2,9 @@
 
 enum SOFT_VM_REGISTERS _regs;
 
-void soft_vm_init_vm(struct soft_vm * vm)
+void soft_vm_init_vm (struct soft_vm * vm)
 {
-	for (int i = 0; i < SOFT_VM_NUM_REGS; i ++) {
+	for (int i = 0; i < SOFT_VM_NUM_REGS; i++) {
 		vm->r[i].hw = 0;
 	}
 	vm->zf = 0;
@@ -12,7 +12,7 @@ void soft_vm_init_vm(struct soft_vm * vm)
 	vm->ip = 0;
 }
 
-void soft_vm_load_program(struct soft_vm * vm, struct soft_program * program)
+void soft_vm_load_program (struct soft_vm * vm, struct soft_program * program)
 {
 	soft_vm_init_vm(vm);
 
@@ -21,12 +21,12 @@ void soft_vm_load_program(struct soft_vm * vm, struct soft_program * program)
 	vm->ip = vm->instructions;
 }
 
-void soft_vm_run_vm(struct soft_vm * vm)
+void soft_vm_run_vm (struct soft_vm * vm)
 {
 
 #if SOFT_VM_USE_COMPUTED_GOTO
 
-#define X(opname) &&label_##opname
+#define X(opname) &&label_##opname,
 	static void * jump_table[num_soft_instrs] = {
 		SOFT_INSTRUCTION_SET
 	};

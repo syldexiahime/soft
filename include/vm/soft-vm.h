@@ -44,7 +44,7 @@ void soft_vm_run_vm_debug(struct soft_vm * vm);
 
 #if __GNUC__
 #ifndef SOFT_VM_USE_COMPUTED_GOTO
-#	define SOFT_VM_USE_COMPUTED_GOTO 1
+#define SOFT_VM_USE_COMPUTED_GOTO 1
 #endif // SOFT_VM_USE_COMPUTED_GOTO
 #endif // __GNUC__
 

@@ -7,9 +7,9 @@
 /**
  * Non public preprocessor functions
  * */
-soft_macro_args * soft_preprocessor_parse_macro_args();
-char * soft_preprocessor_build_macro(char * macro, soft_macro_args * arguments);
-void soft_preprocessor_replace_macro(soft_macro * macro);
+struct soft_macro_args * soft_preprocessor_parse_macro_args();
+char * soft_preprocessor_build_macro(char * macro, struct soft_macro_args * arguments);
+void soft_preprocessor_replace_macro(struct soft_macro * macro);
 void soft_preprocessor_define_macro(char * nbuf);
 
 /**

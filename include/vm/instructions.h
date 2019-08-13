@@ -16,71 +16,71 @@ struct soft_instr {
 	/** \
 	 * Misc. instructions \
 	 * */ \
-	X(halt), \
-	X(breakpoint), \
-	X(noop), \
-	X(int), \
+	X(halt) \
+	X(breakpoint) \
+	X(noop) \
+	X(int) \
  \
 	/** \
 	 * Data instruction thingies \
 	 * */ \
-	X(loadi), \
-	X(load_dw), \
-	X(load_w), \
-	X(store_dw), \
-	X(store_w), \
-	X(mov), \
-	X(movi), \
-	X(push_dw), \
-	X(pop_dw), \
-	X(push_w), \
-	X(pop_w), \
+	X(loadi) \
+	X(load_dw) \
+	X(load_w) \
+	X(store_dw) \
+	X(store_w) \
+	X(mov) \
+	X(movi) \
+	X(push_dw) \
+	X(pop_dw) \
+	X(push_w) \
+	X(pop_w) \
 \
 	/** \
 	 * Arithmetic instructions \
 	 * */ \
-	X(dadd), \
-	X(dsub), \
-	X(dmul), \
-	X(ddiv), \
-	X(daddi), \
-	X(dsubi), \
-	X(dmuli), \
-	X(ddivi), \
+	X(dadd) \
+	X(dsub) \
+	X(dmul) \
+	X(ddiv) \
+	X(daddi) \
+	X(dsubi) \
+	X(dmuli) \
+	X(ddivi) \
 \
-	X(dcmp), \
+	X(dcmp) \
 \
 	/** \
 	 * Bitwise instructions \
 	 * */ \
-	X(dand), \
-	X(dor), \
-	X(dnot), \
-	X(dxor), \
-	X(dlshift), \
-	X(drshift), \
+	X(dand) \
+	X(dor) \
+	X(dnot) \
+	X(dxor) \
+	X(dlshift) \
+	X(drshift) \
 \
 	/** \
 	 * Jump instructions \
 	 * */ \
-	X(jmp), \
-	X(jmpz), \
-	X(jmpnz), \
-	X(jmpgt), \
-	X(jmpgte), \
-	X(jmplt), \
-	X(jmplte), \
+	X(jmp) \
+	X(jmpz) \
+	X(jmpnz) \
+	X(jmpgt) \
+	X(jmpgte) \
+	X(jmplt) \
+	X(jmplte) \
 \
 	/** \
 	 * Cast instructions \
 	 * */ \
-	X(castint32), \
+	X(castint32) \
 	X(castfloat)
 
 
-#define X(opname) soft_instr_##opname
+#define X(opname) soft_instr_##opname,
 enum soft_instruction_set {
-	SOFT_INSTRUCTION_SET,
+	SOFT_INSTRUCTION_SET
 	num_soft_instrs,
 };
 #undef X
