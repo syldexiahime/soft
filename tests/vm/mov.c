@@ -1,7 +1,7 @@
 #include "vm/vm-test.h"
 #include <stdlib.h>
 
-void soft_vm_test_movi(void **state)
+void soft_vm_test_movi (void **state)
 {
 	struct soft_instr instructions[] = {
 		sinstr(movi, 0, soft_rax, 17),
@@ -19,14 +19,14 @@ void soft_vm_test_movi(void **state)
 	assert_true(vm.r[soft_rax].w == 17);
 }
 
-void soft_vm_test_mov(void **state)
+void soft_vm_test_mov (void **state)
 {
 	sval_t datastore[] = {
 		sval_from_int(17),
 	};
 
 	struct soft_instr instructions[] = {
-		sinstr(load_dw, 0, soft_rax, 0),
+		sinstr(loadi_qw, 0, soft_rax, 0),
 		sinstr(mov, soft_rax, soft_rbx, soft_rax),
 		sinstr(halt, 0, 0, 0),
 	};

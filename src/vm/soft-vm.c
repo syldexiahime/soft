@@ -2,17 +2,17 @@
 
 enum SOFT_VM_REGISTERS _regs;
 
-void soft_vm_init_vm(struct soft_vm * vm)
+void soft_vm_init_vm (struct soft_vm * vm)
 {
-	for (int i = 0; i < SOFT_VM_NUM_REGS; i ++) {
-		vm->r[i].hw = 0;
+	for (int i = 0; i < SOFT_VM_NUM_REGS; i++) {
+		vm->r[i].qw = 0;
 	}
 	vm->zf = 0;
 	vm->sf = 0;
 	vm->ip = 0;
 }
 
-void soft_vm_load_program(struct soft_vm * vm, struct soft_program * program)
+void soft_vm_load_program (struct soft_vm * vm, struct soft_program * program)
 {
 	soft_vm_init_vm(vm);
 
@@ -21,12 +21,12 @@ void soft_vm_load_program(struct soft_vm * vm, struct soft_program * program)
 	vm->ip = vm->instructions;
 }
 
-void soft_vm_run_vm(struct soft_vm * vm)
+void soft_vm_run_vm (struct soft_vm * vm)
 {
 
 #if SOFT_VM_USE_COMPUTED_GOTO
 
-#define X(opname) &&label_##opname
+#define X(opname) &&label_##opname,
 	static void * jump_table[num_soft_instrs] = {
 		SOFT_INSTRUCTION_SET
 	};
@@ -76,63 +76,109 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			soft_vm_syscall(vm, instr);
 			goto increment_pc;
 
-		softvm_op(loadi)
+		softvm_op(dload)
 			vm->r[instr.dst] = *((union vm_register *) sval_to_pointer(bitwise_cast(sval_t, union vm_register, vm->r[instr.src])));
 			goto increment_pc;
 
-		softvm_op(load_dw)
-			vm->r[instr.dst].dw = *(doubleword_t *) (vm->ds + instr.imm);
+		softvm_op(loadi)
+			vm->r[instr.dst].b = *(byte_t *) (vm->ds + instr.imm);
 			goto increment_pc;
 
-		softvm_op(load_w)
+		softvm_op(loadi_w)
 			vm->r[instr.dst].w = *(word_t *) (vm->ds + instr.imm);
 			goto increment_pc;
 
-		softvm_op(store_dw) {
-			doubleword_t * ptr = sval_to_pointer(bitwise_cast(sval_t, union vm_register, vm->r[instr.dst]));
-			*ptr = vm->r[instr.src].dw;
+		softvm_op(loadi_dw)
+			vm->r[instr.dst].dw = *(doubleword_t *) (vm->ds + instr.imm);
+			goto increment_pc;
+
+		softvm_op(loadi_qw)
+			vm->r[instr.dst].qw = *(quadword_t *) (vm->ds + instr.imm);
+			goto increment_pc;
+
+		softvm_op(dstore) {
+			quadword_t * ptr = sval_to_pointer(bitwise_cast(sval_t, union vm_register, vm->r[instr.dst]));
+			*ptr = vm->r[instr.src].qw;
 			goto increment_pc;
 		}
 
-		softvm_op(store_w) {
-			doubleword_t * ptr = sval_to_pointer(bitwise_cast(sval_t, union vm_register, vm->r[instr.dst]));
-			*ptr = vm->r[instr.src].w;
+		softvm_op(store)
+			*((byte_t *) vm->r[instr.dst].ptr) = vm->r[instr.src].b;
 			goto increment_pc;
-		}
+
+		softvm_op(store_w)
+			*((word_t *) vm->r[instr.dst].ptr) = vm->r[instr.src].w;
+			goto increment_pc;
+
+		softvm_op(store_dw)
+			*((doubleword_t *) vm->r[instr.dst].ptr) = vm->r[instr.src].dw;
+			goto increment_pc;
+
+		softvm_op(store_qw)
+			*((quadword_t *) vm->r[instr.dst].ptr) = vm->r[instr.src].qw;
+			goto increment_pc;
 
 		softvm_op(mov)
-			vm->r[instr.dst] = vm->r[instr.imm];
+			vm->r[instr.dst] = vm->r[instr.src];
 			goto increment_pc;
 
 		softvm_op(movi)
 			vm->r[instr.dst].dw = instr.imm;
 			goto increment_pc;
 
-		softvm_op(push_dw) {
-			doubleword_t * ptr = (doubleword_t *) vm->r[soft_rsp].dw;
-			*ptr               = vm->r[instr.src].dw;
-			vm->r[soft_rsp].dw = bitwise_cast(doubleword_t, doubleword_t *, --ptr);
-			goto increment_pc;
-		}
-
-		softvm_op(pop_dw) {
-			doubleword_t * ptr  = ((doubleword_t *) vm->r[soft_rsp].dw) + 1;
-			vm->r[instr.dst].dw = *ptr;
-			vm->r[soft_rsp].dw  = bitwise_cast(doubleword_t, doubleword_t *, ptr);
+		softvm_op(push) {
+			byte_t * ptr        = (byte_t *) vm->r[soft_rsp].ptr;
+			*ptr                = vm->r[instr.src].b;
+			vm->r[soft_rsp].ptr = --ptr;
 			goto increment_pc;
 		}
 
 		softvm_op(push_w) {
-			word_t * ptr       = (word_t *) vm->r[soft_rsp].w;
-			*ptr               = vm->r[instr.src].w;
-			vm->r[soft_rsp].dw = bitwise_cast(doubleword_t, word_t *, --ptr);
+			word_t * ptr        = (word_t *) vm->r[soft_rsp].ptr;
+			*ptr                = vm->r[instr.src].w;
+			vm->r[soft_rsp].ptr = --ptr;
+			goto increment_pc;
+		}
+
+		softvm_op(push_dw) {
+			doubleword_t * ptr  = (doubleword_t *) vm->r[soft_rsp].ptr;
+			*ptr                = vm->r[instr.src].dw;
+			vm->r[soft_rsp].ptr = --ptr;
+			goto increment_pc;
+		}
+
+		softvm_op(push_qw) {
+			quadword_t * ptr    = (quadword_t *) vm->r[soft_rsp].ptr;
+			*ptr                = vm->r[instr.src].qw;
+			vm->r[soft_rsp].ptr = --ptr;
+			goto increment_pc;
+		}
+
+		softvm_op(pop) {
+			byte_t * ptr        = ((byte_t *) vm->r[soft_rsp].ptr) + 1;
+			vm->r[instr.dst].b  = *ptr;
+			vm->r[soft_rsp].ptr = ptr;
 			goto increment_pc;
 		}
 
 		softvm_op(pop_w) {
-			word_t * ptr       = ((word_t *) vm->r[soft_rsp].w) + 1;
-			vm->r[instr.dst].w = *ptr;
-			vm->r[soft_rsp].dw = bitwise_cast(doubleword_t, word_t *, ptr);
+			word_t * ptr        = ((word_t *) vm->r[soft_rsp].ptr) + 1;
+			vm->r[instr.dst].w  = *ptr;
+			vm->r[soft_rsp].ptr = ptr;
+			goto increment_pc;
+		}
+
+		softvm_op(pop_dw) {
+			doubleword_t * ptr  = ((doubleword_t *) vm->r[soft_rsp].ptr) + 1;
+			vm->r[instr.dst].dw = *ptr;
+			vm->r[soft_rsp].ptr = ptr;
+			goto increment_pc;
+		}
+
+		softvm_op(pop_qw) {
+			quadword_t * ptr    = ((quadword_t *) vm->r[soft_rsp].ptr) + 1;
+			vm->r[instr.dst].qw = *ptr;
+			vm->r[soft_rsp].ptr = ptr;
 			goto increment_pc;
 		}
 
@@ -219,37 +265,37 @@ void soft_vm_run_vm(struct soft_vm * vm)
 			goto increment_pc;
 
 		softvm_op(jmp)
-			vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+			vm->ip = (struct soft_instr *) vm->r[instr.src].ptr;
 			goto start;
 
 		softvm_op(jmpz)
 			if (vm->zf)
-				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+				vm->ip = (struct soft_instr *) vm->r[instr.src].ptr;
 			goto start;
 
 		softvm_op(jmpnz)
 			if (!vm->zf)
-				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+				vm->ip = (struct soft_instr *) vm->r[instr.src].ptr;
 			goto start;
 
 		softvm_op(jmpgt)
 			if (!vm->zf && !vm->sf)
-				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+				vm->ip = (struct soft_instr *) vm->r[instr.src].ptr;
 			goto start;
 
 		softvm_op(jmpgte)
 			if (vm->zf || !vm->sf)
-				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+				vm->ip = (struct soft_instr *) vm->r[instr.src].ptr;
 			goto start;
 
 		softvm_op(jmplt)
 			if (!vm->zf && vm->sf)
-				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+				vm->ip = (struct soft_instr *) vm->r[instr.src].ptr;
 			goto start;
 
 		softvm_op(jmplte)
 			if (vm->zf || vm->sf)
-				vm->ip = (struct soft_instr *) vm->r[instr.src].dw;
+				vm->ip = (struct soft_instr *) vm->r[instr.src].ptr;
 			goto start;
 
 		softvm_op(castint32)

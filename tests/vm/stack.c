@@ -1,7 +1,7 @@
 #include "vm/vm-test.h"
 #include <stdlib.h>
 
-void soft_vm_test_push_dw_and_pop_dw(void ** state)
+void soft_vm_test_push_qw_and_pop_qw (void ** state)
 {
 	size_t stack_len = sizeof(char *) + sizeof(sval_t);
 	char * stack = smalloc(stack_len);
@@ -13,11 +13,11 @@ void soft_vm_test_push_dw_and_pop_dw(void ** state)
 	memcpy(datastore + sizeof(char *), &i, sizeof(sval_t));
 
 	struct soft_instr instructions[] = {
-		sinstr(load_dw, 0, soft_rsp, 0),
-		sinstr(load_dw, 0, soft_rax, sizeof(char *)),
-		sinstr(push_dw, soft_rax, 0, 0),
+		sinstr(loadi_qw, 0, soft_rsp, 0),
+		sinstr(loadi_qw, 0, soft_rax, sizeof(char *)),
+		sinstr(push_qw, soft_rax, 0, 0),
 		sinstr(breakpoint, 0, 0, 0),
-		sinstr(pop_dw, 0, soft_rbx, 0),
+		sinstr(pop_qw, 0, soft_rbx, 0),
 		sinstr(halt, 0, 0, 0),
 	};
 
@@ -30,11 +30,11 @@ void soft_vm_test_push_dw_and_pop_dw(void ** state)
 	soft_vm_run_vm(&vm);
 
 	assert_true(sval_to_int(* (sval_t *) stack_top) == 17);
-	assert_true(vm.r[soft_rsp].dw == stack_top - sizeof(doubleword_t));
+	assert_true(vm.r[soft_rsp].qw == stack_top - sizeof(quadword_t));
 
 	soft_vm_run_vm(&vm);
 
-	assert_true(bitwise_cast(doubleword_t *, doubleword_t, vm.r[soft_rsp].dw) == &stack[stack_len]);
+	assert_true(bitwise_cast(quadword_t *, quadword_t, vm.r[soft_rsp].qw) == &stack[stack_len]);
 	assert_true(sval_to_int(vm.r[soft_rbx].sval) == 17);
 
 	sfree(stack);
