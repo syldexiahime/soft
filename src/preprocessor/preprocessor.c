@@ -42,12 +42,17 @@ soft_macro_args * soft_preprocessor_parse_macro_args ()
 	args->length = 0; args->size = 8;
 	args->argument_array = malloc(args->size * sizeof(char *));
 
-	char next;
-	soft_charstream_skip_inline_whitespace(next);
-	while (isalpha(next) && next != '\n' && !soft_charstream_eof()) {
-		if (args->length >= args->size) args->argument_array = realloc(args->argument_array, (args->size += 8));
+	soft_charstream_skip_inline_whitespace();
+
+	char next = soft_charstream_peek();
+	while (is_soft_preprocessor_word(next, 0) && next != '\n' && !soft_charstream_eof()) {
+		if (args->length >= args->size)
+			args->argument_array = realloc(args->argument_array, (args->size += 8));
+
 		args->argument_array[args->length++] = soft_charstream_read_whilei(is_soft_preprocessor_word);
-		soft_charstream_skip_inline_whitespace(next);
+		soft_charstream_skip_inline_whitespace();
+
+		next = soft_charstream_peek();
 	}
 
 	return args;
@@ -62,8 +67,8 @@ char * soft_preprocessor_build_macro (char * macro, soft_macro_args * arguments)
 	}
 
 	size_t macrolen = strlen(macro);
-	size_t buflen = macrolen + argslen;
-	char * buf    = malloc(buflen * sizeof(char));
+	size_t buflen   = macrolen + argslen;
+	char * buf      = malloc(buflen * sizeof(char));
 	strcpy(buf, macro);
 
 	char next;
@@ -98,7 +103,9 @@ char * soft_preprocessor_build_macro (char * macro, soft_macro_args * arguments)
 			arg_pos = i + 1;
 		}
 	}
-	
+
+	free(arg_no);
+
 	return buf;
 }
 
@@ -216,6 +223,10 @@ void soft_preprocessor_define_macro (char * nbuf)
 		return;
 	}
 
+	macro = calloc(1, sizeof(soft_macro));
+	macro->name = name;
+	macro->body = buf;
+
 	soft_macros * macros = preprocessor->macros;
 
 	for (size_t i = 0; i < macros->length; i++) {
@@ -226,11 +237,10 @@ void soft_preprocessor_define_macro (char * nbuf)
 		}
 	}
 
-	if (macros->length++ >= macros->size) {
+	if (macros->length++ >= macros->size)
 		macros->macro_array = realloc(macros->macro_array, (macros->size *= 2));
-	}
 
-	macros->macro_array[macros->length] = macro;
+	macros->macro_array[macros->length - 1] = macro;
 }
 
 void soft_preprocessor_replace_macro (soft_macro * macro)
@@ -327,7 +337,8 @@ void soft_preprocessor_read_directive (char * nbuf)
 
 	char * type = soft_charstream_read_while((bool (*)(char)) isalpha);
 
-	if (strcmp(type, "macro") == 0) return soft_preprocessor_parse_macro(nbuf);
+	if (strcmp(type, "macro") == 0)
+		return soft_preprocessor_define_macro(nbuf);
 
 	soft_preprocessor_warn("filename", "Unkown preprocessor directive");
 }
@@ -353,7 +364,7 @@ char * soft_preprocessor_preprocess (char * buffer)
 
 		if (p == '\'' || p == '"') in_quote = !in_quote;
 		if (p == ';') while (soft_charstream_peek(p) != '\n') soft_charstream_skip();
-		if (p == '%') soft_preprocessor_parse_macro(buf);
+		if (p == '%') soft_preprocessor_read_directive(buf);
 
 		if (is_soft_preprocessor_word(p, 0)) {
 			char * str = soft_charstream_read_whilei(is_soft_preprocessor_word);
@@ -384,4 +395,6 @@ char * soft_preprocessor_preprocess (char * buffer)
 	if (buf[i++] != '\0') {
 		buf[i] = '\0';
 	}
+
+	return buf;
 }

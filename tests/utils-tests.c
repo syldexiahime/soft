@@ -11,6 +11,13 @@ int main(void) {
 		cmocka_unit_test(soft_test_str_is_number),
 
 		cmocka_unit_test(soft_test_tagged_pointers),
+
+		cmocka_unit_test(soft_test_charstream_peek),
+		cmocka_unit_test(soft_test_charstream_consume),
+		cmocka_unit_test(soft_test_charstream_eof),
+		cmocka_unit_test(soft_test_charstream_expect),
+		cmocka_unit_test(soft_test_charstream_skip),
+		cmocka_unit_test(soft_test_charstream_read_while),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);
