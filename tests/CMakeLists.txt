@@ -49,6 +49,10 @@ list(APPEND tests_names "preprocessor-tests")
 list(APPEND tests_flags " ")
 list(APPEND tests_c_files "preprocessor-tests")
 
+list(APPEND tests_names "assembler-tests")
+list(APPEND tests_flags " ")
+list(APPEND tests_c_files "assembler-tests")
+
 if (CMAKE_C_COMPILER_ID MATCHES "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "GNU")
 	list(APPEND tests_names "instr-tests-no-computed-goto")
 	list(APPEND tests_flags "-DSOFT_VM_USE_COMPUTED_GOTO=0")

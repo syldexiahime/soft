@@ -1,4 +1,5 @@
 #include "preprocessor/preprocessor.h"
+#include "assembler/assembler.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -114,6 +115,7 @@ int main (int argc, char ** argv)
 	for (index = optind; index < argc; index++)
 		printf ("Non-option argument %s\n", argv[index]);
 
+	bool binout   = false;
 	char * buffer = NULL;
 	size_t buflen = 0;
 
@@ -124,11 +126,14 @@ int main (int argc, char ** argv)
 	if (!buffer)
 		return 1;
 
-	soft_preprocessor * preprocessor = soft_preprocessor_init();
+	struct soft_preprocessor * preprocessor = soft_preprocessor_init();
 	output = soft_preprocessor_preprocess(buffer);
 
 	if (E_flag)
 		goto success;
+
+	struct soft_program * prog = soft_asm_assemble(output);
+	binout = true;
 
 	success: ;
 
@@ -147,7 +152,8 @@ int main (int argc, char ** argv)
 		fclose(f);
 	}
 	else {
-		printf("%s", output);
+		if (!binout)
+			printf("%s", output);
 	}
 
 	return 0;
