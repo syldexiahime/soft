@@ -1,15 +1,15 @@
 #include "preprocessor/preprocessor.h"
 
 void soft_preprocessor_read_directive (char * nbuf);
-void soft_preprocessor_replace_macro (soft_macro * macro);
+void soft_preprocessor_replace_macro (struct soft_macro * macro);
 
 bool is_soft_preprocessor_word (char c, size_t i) { return i == 0 ? isalpha(c) : isalnum(c) || c == '_' || c == '$'; }
 
-soft_preprocessor * preprocessor;
+struct soft_preprocessor * preprocessor;
 
-soft_preprocessor * soft_preprocessor_init ()
+struct soft_preprocessor * soft_preprocessor_init ()
 {
-	if (!preprocessor) preprocessor = calloc(1, sizeof(soft_preprocessor));
+	if (!preprocessor) preprocessor = calloc(1, sizeof(struct soft_preprocessor));
 	if (preprocessor->warnings) free(preprocessor->warnings);
 	if (preprocessor->macros)   free(preprocessor->macros);
 
@@ -18,9 +18,9 @@ soft_preprocessor * soft_preprocessor_init ()
 	w->warnings_array = malloc(w->size * sizeof(char *));
 	preprocessor->warnings = w;
 
-	soft_macros * m = malloc(sizeof(soft_macros));
+	struct soft_macros * m = malloc(sizeof(struct soft_macros));
 	m->length = 0; m->size = 0;
-	m->macro_array = malloc(sizeof(soft_macro **));
+	m->macro_array = malloc(sizeof(struct soft_macro **));
 	preprocessor->macros = m;
 
 	return preprocessor;
@@ -36,9 +36,9 @@ void soft_preprocessor_warn (char * filename, char * message)
 	w->warnings_array[w->length++] = soft_charstream_warn(filename, message);
 }
 
-soft_macro_args * soft_preprocessor_parse_macro_args ()
+struct soft_macro_args * soft_preprocessor_parse_macro_args ()
 {
-	soft_macro_args * args = malloc(sizeof(soft_macro_args));
+	struct soft_macro_args * args = malloc(sizeof(struct soft_macro_args));
 	args->length = 0; args->size = 8;
 	args->argument_array = malloc(args->size * sizeof(char *));
 
@@ -58,7 +58,7 @@ soft_macro_args * soft_preprocessor_parse_macro_args ()
 	return args;
 }
 
-char * soft_preprocessor_build_macro (char * macro, soft_macro_args * arguments)
+char * soft_preprocessor_build_macro (char * macro, struct soft_macro_args * arguments)
 {
 	size_t argslen = 0;
 
@@ -109,9 +109,9 @@ char * soft_preprocessor_build_macro (char * macro, soft_macro_args * arguments)
 	return buf;
 }
 
-soft_macro * soft_preprocessor_get_macro (char * word)
+struct soft_macro * soft_preprocessor_get_macro (char * word)
 {
-	soft_macro ** macros = preprocessor->macros->macro_array;
+	struct soft_macro ** macros = preprocessor->macros->macro_array;
 	for (size_t i = 0; i < preprocessor->macros->length; i++) {
 		if (!macros[i]) continue;
 		if (strcmp(word, macros[i]->name) == 0) return macros[i];
@@ -132,7 +132,7 @@ void soft_preprocessor_define_macro (char * nbuf)
 
 	buf[0] = '\0';
 
-	soft_macro * macro = NULL;
+	struct soft_macro * macro = NULL;
 
 	soft_charstream_skip_inline_whitespace();
 	name = soft_charstream_read_whilei(is_soft_preprocessor_word);
@@ -223,11 +223,11 @@ void soft_preprocessor_define_macro (char * nbuf)
 		return;
 	}
 
-	macro = calloc(1, sizeof(soft_macro));
+	macro = calloc(1, sizeof(struct soft_macro));
 	macro->name = name;
 	macro->body = buf;
 
-	soft_macros * macros = preprocessor->macros;
+	struct soft_macros * macros = preprocessor->macros;
 
 	for (size_t i = 0; i < macros->length; i++) {
 		if (!macros->macro_array[i]) {
@@ -243,13 +243,13 @@ void soft_preprocessor_define_macro (char * nbuf)
 	macros->macro_array[macros->length - 1] = macro;
 }
 
-void soft_preprocessor_replace_macro (soft_macro * macro)
+void soft_preprocessor_replace_macro (struct soft_macro * macro)
 {
 	char * buffer = soft_charstream_get_buffer();
 	size_t buffer_size = strlen(buffer);
 	size_t macro_start_pos = soft_charstream_get_pos();
 
-	soft_macro_args * arguments = soft_preprocessor_parse_macro_args();
+	struct soft_macro_args * arguments = soft_preprocessor_parse_macro_args();
 	char * nmacro = soft_preprocessor_build_macro(macro->body, arguments);
 
 	size_t macro_size = strlen(nmacro);
@@ -283,7 +283,7 @@ void soft_preprocessor_parse_macro (char * nbuf)
 	char * buf = malloc(size);
 	char * word = NULL;
 	char * str = NULL;
-	soft_macro * macro = NULL;
+	struct soft_macro * macro = NULL;
 
 	next = soft_charstream_peek();
 
@@ -369,7 +369,7 @@ char * soft_preprocessor_preprocess (char * buffer)
 		if (is_soft_preprocessor_word(p, 0)) {
 			char * str = soft_charstream_read_whilei(is_soft_preprocessor_word);
 
-			soft_macro * macro = soft_preprocessor_get_macro(str);
+			struct soft_macro * macro = soft_preprocessor_get_macro(str);
 			if (macro != NULL) {
 				soft_preprocessor_replace_macro(macro);
 			}
