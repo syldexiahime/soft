@@ -25,6 +25,7 @@ void soft_test_charstream_eof (void ** sate);
 void soft_test_charstream_expect (void ** sate);
 void soft_test_charstream_skip (void ** sate);
 void soft_test_charstream_read_while (void ** sate);
+void soft_test_charstream_read_quote (void ** state);
 
 void soft_test_hashtable (void ** state);
 void soft_test_hashtable_collision (void ** state);

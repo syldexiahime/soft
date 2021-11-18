@@ -18,6 +18,7 @@ int main(void) {
 		cmocka_unit_test(soft_test_charstream_expect),
 		cmocka_unit_test(soft_test_charstream_skip),
 		cmocka_unit_test(soft_test_charstream_read_while),
+		cmocka_unit_test(soft_test_charstream_read_quote),
 
 		cmocka_unit_test(soft_test_hashtable),
 		cmocka_unit_test(soft_test_hashtable_collision),

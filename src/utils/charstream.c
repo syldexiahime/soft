@@ -83,20 +83,31 @@ char * soft_charstream_read_quote ()
 	char quote = soft_charstream_consume();
 	bool escaped = false;
 
-	char next = soft_charstream_peek();
+	char next = soft_charstream_consume();
 
-	while (!(next == quote && escaped) && !soft_charstream_eof()) {
+	while ((next != quote || escaped) && !soft_charstream_eof()) {
 		if (index + 2 >= size) {
 			size += 16;
-			buffer = (char *) realloc(buffer, size);
+			buffer = (char *) realloc(buffer, size * sizeof(char));
 		}
-		buffer[index++] = next;
-		next = soft_charstream_peek();
-		escaped = next == '\\';
+
+		if (next == '\\' && !escaped) {
+			escaped = true;
+		}
+		else {
+			buffer[index++] = next;
+			escaped = false;
+		}
+
+		next = soft_charstream_consume();
 	}
-	if (next != quote) soft_charstream_panic("filename", "Unable to find match quotes.");
-	buffer[index++] = soft_charstream_consume();
-	buffer[index]   = '\0';
+
+	if (next != quote)
+		soft_charstream_panic("filename", "Unable to find matching quote.");
+
+	buffer[index] = '\0';
+
+	buffer = (char *) realloc(buffer, index * sizeof(char));
 
 	return buffer;
 }

@@ -4,7 +4,7 @@
 struct soft_charstream * charstream;
 char test_string[] = "Hello World!";
 
-void soft_test_charstream_peek(void **state)
+void soft_test_charstream_peek (void ** state)
 {
 	charstream = soft_charstream_init(test_string);
 	char peeked = soft_charstream_peek();
@@ -13,7 +13,7 @@ void soft_test_charstream_peek(void **state)
 	assert_true(charstream->index == 0);
 }
 
-void soft_test_charstream_consume(void **state)
+void soft_test_charstream_consume (void ** state)
 {
 	charstream = soft_charstream_init(test_string);
 
@@ -30,7 +30,7 @@ void soft_test_charstream_consume(void **state)
 	assert_true(charstream->index == 1);
 }
 
-void soft_test_charstream_eof(void **state)
+void soft_test_charstream_eof (void ** state)
 {
 	bool eof;
 	char eof_test_string[] = "hi";
@@ -49,8 +49,8 @@ void soft_test_charstream_eof(void **state)
 	assert_true(charstream->index == 2);
 }
 
-bool expect_e(char ch) { return ch == 'e'; }
-void soft_test_charstream_expect(void **state)
+bool expect_e (char ch) { return ch == 'e'; }
+void soft_test_charstream_expect (void ** state)
 {
 	bool expected;
 	charstream = soft_charstream_init(test_string);
@@ -64,7 +64,7 @@ void soft_test_charstream_expect(void **state)
 	assert_true(expected);
 }
 
-void soft_test_charstream_skip(void **state)
+void soft_test_charstream_skip (void ** state)
 {
 	bool peeked;
 	soft_charstream_init(test_string);
@@ -74,7 +74,7 @@ void soft_test_charstream_skip(void **state)
 	assert_true(peeked != soft_charstream_peek());
 }
 
-void soft_test_charstream_read_while(void **state)
+void soft_test_charstream_read_while (void ** state)
 {
 	char * str;
 	char expected[] = "Hello";
@@ -87,4 +87,43 @@ void soft_test_charstream_read_while(void **state)
 	assert_true(strlen(str) != 0);
 	assert_true(strcmp(str, expected) == 0);
 	assert_false(strcmp(str, test_string) == 0);
+}
+
+void soft_test_charstream_read_quote (void ** state)
+{
+	char * str;
+
+	soft_charstream_init("'single quotes'");
+	str = soft_charstream_read_quote();
+	assert_true(strcmp(str, "single quotes") == 0);
+
+	soft_charstream_init("\"double quotes\"");
+	str = soft_charstream_read_quote();
+	assert_true(strcmp(str, "double quotes") == 0);
+
+	/* test escaped quote in quote */
+
+	soft_charstream_init("'single\\' quotes'");
+	str = soft_charstream_read_quote();
+	assert_true(strcmp(str, "single' quotes") == 0);
+
+	soft_charstream_init("\"double\\\" quotes\"");
+	str = soft_charstream_read_quote();
+	assert_true(strcmp(str, "double\" quotes") == 0);
+
+	/* test escaped backslash */
+
+	soft_charstream_init("'back\\\\slash'");
+	str = soft_charstream_read_quote();
+	assert_true(strcmp(str, "back\\slash") == 0);
+
+	/* test escaped character after quote */
+
+	soft_charstream_init("'single quotes'\n");
+	str = soft_charstream_read_quote();
+	assert_true(strcmp(str, "single quotes") == 0);
+
+	soft_charstream_init("\"double quotes\"\n");
+	str = soft_charstream_read_quote();
+	assert_true(strcmp(str, "double quotes") == 0);
 }
