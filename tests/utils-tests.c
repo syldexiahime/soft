@@ -18,6 +18,10 @@ int main(void) {
 		cmocka_unit_test(soft_test_charstream_expect),
 		cmocka_unit_test(soft_test_charstream_skip),
 		cmocka_unit_test(soft_test_charstream_read_while),
+
+		cmocka_unit_test(soft_test_hashtable),
+		cmocka_unit_test(soft_test_hashtable_collision),
+		cmocka_unit_test(soft_test_hashtable_capacity),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);
