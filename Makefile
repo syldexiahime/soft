@@ -20,26 +20,34 @@ ifneq (${_DEV_FLAGS}${COVERAGE_FLAGS},)
 endif
 
 all:
-	@(mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR} && cmake -D NDEBUG=1 ${_BUILD_FLAGS} .. && make --no-print-directory)
+	@mkdir -p "${BUILD_DIR}"
+	@(cd ${BUILD_DIR} && cmake -D NDEBUG=1 ${_BUILD_FLAGS} .. && make --no-print-directory)
 
 dev:
-	@(mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR} && cmake ${_DEV_FLAGS} .. && make --no-print-directory)
+	@mkdir -p "${BUILD_DIR}"
+	@(cd ${BUILD_DIR} && cmake ${_DEV_FLAGS} .. && make --no-print-directory)
 
 test:
+	@mkdir -p "${BUILD_DIR}"
+	@(cd ${BUILD_DIR} && cmake ${_DEV_FLAGS} .. && make --no-print-directory) &>/dev/null
 	@make ${MAKE_FLAGS} test
 
 check:
+	@mkdir -p "${BUILD_DIR}"
+	@(cd ${BUILD_DIR} && cmake ${_DEV_FLAGS} .. && make --no-print-directory) &>/dev/null
 	@make ${MAKE_FLAGS} check
 
 test-verbose:
+	@mkdir -p "${BUILD_DIR}"
+	@(cd ${BUILD_DIR} && cmake ${_DEV_FLAGS} .. && make --no-print-directory)
 	@make ${MAKE_FLAGS} test-verbose
 
 coverage:
-	@grep -q TEST_COVERAGE:BOOL=1 "${BUILD_DIR}/CMakeCache.txt" || (mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR} && cmake ${_COVERAGE_FLAGS} .. && make)
-	@test "$$(find ${BUILD_DIR}/tests/ -name '*.profraw' -print -quit)" || make ${MAKE_FLAGS} test
+	@mkdir -p "${BUILD_DIR}"
+	@(cd ${BUILD_DIR} && cmake ${_COVERAGE_FLAGS} .. && make) &>/dev/null
+	@make ${MAKE_FLAGS} test
 	@make ${MAKE_FLAGS} coverage
 
 clean:
 	rm -r "${BUILD_DIR}"
-	@mkdir -p "${BUILD_DIR}"
 

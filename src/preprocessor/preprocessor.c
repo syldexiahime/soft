@@ -80,7 +80,7 @@ char * soft_preprocessor_build_macro (char * macro, struct soft_macro_args * arg
 		next = buf[i];
 
 		if (parsing_replacement) {
-			if (isnumber(next)) {
+			if (isdigit(next)) {
 				if (i - arg_pos == 3) {
 					arg_no[i - arg_pos] = '\0';
 				}
@@ -191,8 +191,8 @@ void soft_preprocessor_define_macro (char * nbuf)
 				free(str);
 				soft_preprocessor_read_directive(nbuf);
 			}
-			else if (isnumber(next)) {
-				str = soft_charstream_read_while((bool (*)(char)) isnumber);
+			else if (isdigit(next)) {
+				str = soft_charstream_read_while((bool (*)(char)) isdigit);
 
 				goto concat_buf;
 			}
@@ -271,7 +271,7 @@ void soft_preprocessor_parse_macro (char * nbuf)
 	char * name = soft_charstream_read_whilei(is_soft_preprocessor_word);
 	next = soft_charstream_peek();
 	while (next != '\n' && isspace(next)) { soft_charstream_skip(); next = soft_charstream_peek(); }
-	char * num_args = soft_charstream_read_while((bool (*)(char)) isnumber);
+	char * num_args = soft_charstream_read_while((bool (*)(char)) isdigit);
 	while (next != '\n' && isspace(next)) { soft_charstream_skip(); next = soft_charstream_peek(); }
 
 	// if (soft_charstream_consume() != '\n'); // TODO PANIC
@@ -322,8 +322,8 @@ void soft_preprocessor_parse_macro (char * nbuf)
 				char * str = soft_charstream_read_while((bool (*)(char)) isalpha);
 				if (strcmp(str, "endmacro") == 0) break;
 			}
-			if (isnumber(next)) {
-				char * param = soft_charstream_read_while((bool (*)(char)) isnumber);
+			if (isdigit(next)) {
+				char * param = soft_charstream_read_while((bool (*)(char)) isdigit);
 			}
 		}
 

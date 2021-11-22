@@ -1,6 +1,6 @@
-[![Drone CI Badge](https://drone.ofthewi.red/api/badges/Syldexia/soft/status.svg)](https://drone.ofthewi.red/Syldexia/soft)
+[![builds.sr.ht status](https://builds.sr.ht/~syldexia/soft.svg)](https://builds.sr.ht/~syldexia/soft?)
 [![codecov](https://codecov.io/gh/syldexiahime/soft/branch/master/graph/badge.svg)](https://codecov.io/gh/syldexiahime/soft)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7ef1810255d241b4be9d07fa2449a250)](https://www.codacy.com/app/Syldexia/soft?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=syldexiahime/soft&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c3862d7eda764155825be9d8f091ad47)](https://www.codacy.com/gh/syldexiahime/soft/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=syldexiahime/soft&amp;utm_campaign=Badge_Grade)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 # Soft

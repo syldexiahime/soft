@@ -1,8 +1,8 @@
 #include "utils/util-test.h"
 #include "utils/charstream.h"
 
-struct soft_charstream * charstream;
-char test_string[] = "Hello World!";
+static struct soft_charstream * charstream;
+static char test_string[] = "Hello World!";
 
 void soft_test_charstream_peek (void ** state)
 {
@@ -80,7 +80,7 @@ void soft_test_charstream_read_while (void ** state)
 	char expected[] = "Hello";
 	soft_charstream_init(test_string);
 
-	str = soft_charstream_read_while((bool (*)(char)) isnumber);
+	str = soft_charstream_read_while((bool (*)(char)) isdigit);
 	assert_true(strlen(str) == 0);
 
 	str = soft_charstream_read_while((bool (*)(char)) isalpha);

@@ -5,7 +5,7 @@
 #include "preprocessor/preprocessor-test.h"
 #include "utils/charstream.h"
 
-struct soft_preprocessor * preprocessor;
+static struct soft_preprocessor * preprocessor;
 
 void soft_preprocessor_test_parse_macro_args (void ** state)
 {

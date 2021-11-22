@@ -1,0 +1,36 @@
+image: alpine/latest
+packages:
+  - bash
+  - dpkg
+  - git
+  - autoconf
+  - automake
+  - make
+  - cmake
+  - clang
+  - llvm
+  - compiler-rt-static
+  - lld
+  - musl-dev
+  - cmocka
+  - cmocka-dev
+environment:
+  CC: /usr/bin/clang
+secrets:
+  - e4901095-f879-4052-8466-b9020a553b86
+tasks:
+  - build: |
+      cd ~/soft
+      make
+  - test: |
+      cd ~/soft
+      make dev
+      make test-verbose
+  - coverage: |
+      . ~/.secrets
+      cd ~/soft
+      make coverage
+      sudo ln -s /proc/self/fd /dev/fd
+      set -v;
+      bash -c "bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN"
+      set -x;

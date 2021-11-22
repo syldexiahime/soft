@@ -4,11 +4,11 @@
 void soft_vm_test_push_qw_and_pop_qw (void ** state)
 {
 	size_t stack_len = sizeof(char *) + sizeof(sval_t);
-	char * stack = smalloc(stack_len);
+	char * stack = alloca(stack_len);
 	char * stack_top = stack + stack_len;
 	sval_t i = sval_from_int(17);
 
-	char * datastore = smalloc(stack_len / sizeof(char));
+	char * datastore = alloca(stack_len / sizeof(char));
 	memcpy(datastore, &stack_top, sizeof(char *));
 	memcpy(datastore + sizeof(char *), &i, sizeof(sval_t));
 
@@ -36,8 +36,5 @@ void soft_vm_test_push_qw_and_pop_qw (void ** state)
 
 	assert_true(reinterpret_cast(quadword_t *, quadword_t, vm.r[soft_rsp].qw) == &stack[stack_len]);
 	assert_true(sval_to_int(vm.r[soft_rbx].sval) == 17);
-
-	sfree(stack);
-	sfree(datastore);
 }
 

@@ -7,7 +7,7 @@
 #define sinstr(opc, s, d, im) \
 	(struct soft_instr) { .opcode = soft_instr_##opc, .src = s, .dst = d, .imm = im }
 
-struct soft_vm vm;
+static struct soft_vm vm;
 
 /**
  * Sval tests

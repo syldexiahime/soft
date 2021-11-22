@@ -36,24 +36,30 @@ endif ()
 list(APPEND tests_names "utils-tests")
 list(APPEND tests_flags " ")
 list(APPEND tests_c_files "utils-tests")
+file(GLOB_RECURSE utils_tests_sources "utils/*.c")
 
 list(APPEND tests_names "sval-tests")
 list(APPEND tests_flags " ")
 list(APPEND tests_c_files "sval-tests")
+file(GLOB_RECURSE sval_tests_sources "vm/sval.c")
 
 list(APPEND tests_names "instr-tests")
 list(APPEND tests_flags " ")
 list(APPEND tests_c_files "instr-tests")
+file(GLOB_RECURSE instr_tests_sources "vm/*.c")
 
 list(APPEND tests_names "preprocessor-tests")
 list(APPEND tests_flags " ")
 list(APPEND tests_c_files "preprocessor-tests")
+file(GLOB_RECURSE preprocessor_tests_sources "preprocessor/*.c")
 
-if (CMAKE_C_COMPILER_ID MATCHES "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "GNU")
-	list(APPEND tests_names "instr-tests-no-computed-goto")
-	list(APPEND tests_flags "-DSOFT_VM_USE_COMPUTED_GOTO=0")
-	list(APPEND tests_c_files "instr-tests")
-endif ()
+
+# if (CMAKE_C_COMPILER_ID MATCHES "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "GNU")
+# 	list(APPEND tests_names "instr-tests-no-computed-goto")
+# 	list(APPEND tests_flags "-DSOFT_VM_USE_COMPUTED_GOTO=0")
+# 	list(APPEND tests_c_files "instr-tests")
+# 	file(GLOB_RECURSE instr_tests_no_computed_goto_sources "vm/*.c")
+# endif ()
 
 
 ################################################
@@ -66,8 +72,9 @@ foreach(i RANGE ${count})
 	list(GET tests_names ${i} test_name)
 	list(GET tests_flags ${i} test_flags)
 	list(GET tests_c_files ${i} test_c_file)
+	string(REPLACE - _ sources ${test_name}-sources)
 
-	add_executable(${test_name} ${test_c_file}.c ${SOURCES} ${HEADERS} ${TEST_SOURCES} ${TEST_HEADERS})
+	add_executable(${test_name} ${test_c_file}.c ${SOURCES} ${HEADERS} ${${sources}} ${TEST_HEADERS})
 	target_link_libraries(${test_name} cmocka)
 	target_include_directories(${test_name} PRIVATE ../include ../tests)
 	target_compile_options(${test_name} PRIVATE ${COVERAGE_COMPILE_FLAGS})

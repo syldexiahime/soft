@@ -1,7 +1,7 @@
 #include "vm/vm-test.h"
 #include <math.h>
 
-union sval v;
+static union sval v;
 
 void soft_test_sval_null(void ** state)
 {
