@@ -11,6 +11,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#define TEST_QWORD 0xCA0A49B9222482A9
+#define TEST_QWORD_2 0xEF0D17B921292981
+#define TEST_DWORD reinterpret_cast(doubleword_t, double, -20399257609.9)
+#define TEST_DWORD_2 2864345431
+
 struct dump_memory_args {
 	char * arr;
 	size_t len;

@@ -34,7 +34,7 @@ void soft_vm_test_push_qw_and_pop_qw (void ** state)
 
 	soft_vm_run_vm(&vm);
 
-	assert_true(bitwise_cast(quadword_t *, quadword_t, vm.r[soft_rsp].qw) == &stack[stack_len]);
+	assert_true(reinterpret_cast(quadword_t *, quadword_t, vm.r[soft_rsp].qw) == &stack[stack_len]);
 	assert_true(sval_to_int(vm.r[soft_rbx].sval) == 17);
 
 	sfree(stack);

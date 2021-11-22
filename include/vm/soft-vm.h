@@ -11,6 +11,7 @@
 #include <assert.h>
 
 struct soft_program {
+	size_t ds_size;
 	char * datastore;
 	struct soft_instr * instructions;
 };

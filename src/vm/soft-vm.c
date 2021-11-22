@@ -76,8 +76,20 @@ void soft_vm_run_vm (struct soft_vm * vm)
 			soft_vm_syscall(vm, instr);
 			goto increment_pc;
 
-		softvm_op(dload)
-			vm->r[instr.dst] = *((union vm_register *) sval_to_pointer(bitwise_cast(sval_t, union vm_register, vm->r[instr.src])));
+		softvm_op(load)
+			vm->r[instr.dst].b = *(byte_t *) (vm->r[instr.src].ptr);
+			goto increment_pc;
+
+		softvm_op(load_w)
+			vm->r[instr.dst].w = *(word_t *) (vm->r[instr.src].ptr);
+			goto increment_pc;
+
+		softvm_op(load_dw)
+			vm->r[instr.dst].dw = *(doubleword_t *) (vm->r[instr.src].ptr);
+			goto increment_pc;
+
+		softvm_op(load_qw)
+			vm->r[instr.dst].qw = *(quadword_t *) (vm->r[instr.src].ptr);
 			goto increment_pc;
 
 		softvm_op(loadi)
@@ -96,26 +108,84 @@ void soft_vm_run_vm (struct soft_vm * vm)
 			vm->r[instr.dst].qw = *(quadword_t *) (vm->ds + instr.imm);
 			goto increment_pc;
 
-		softvm_op(dstore) {
-			quadword_t * ptr = sval_to_pointer(bitwise_cast(sval_t, union vm_register, vm->r[instr.dst]));
-			*ptr = vm->r[instr.src].qw;
-			goto increment_pc;
-		}
-
 		softvm_op(store)
-			*((byte_t *) vm->r[instr.dst].ptr) = vm->r[instr.src].b;
+			*(byte_t *) vm->r[instr.dst].ptr = vm->r[instr.src].b;
 			goto increment_pc;
 
 		softvm_op(store_w)
-			*((word_t *) vm->r[instr.dst].ptr) = vm->r[instr.src].w;
+			*(word_t *) vm->r[instr.dst].ptr = vm->r[instr.src].w;
 			goto increment_pc;
 
 		softvm_op(store_dw)
-			*((doubleword_t *) vm->r[instr.dst].ptr) = vm->r[instr.src].dw;
+			*(doubleword_t *) vm->r[instr.dst].ptr = vm->r[instr.src].dw;
 			goto increment_pc;
 
 		softvm_op(store_qw)
-			*((quadword_t *) vm->r[instr.dst].ptr) = vm->r[instr.src].qw;
+			*(quadword_t *) vm->r[instr.dst].ptr = vm->r[instr.src].qw;
+			goto increment_pc;
+
+		softvm_op(storep)
+			*(byte_t *) vm->r[instr.dst].ptr = *(byte_t *) vm->r[instr.src].ptr;
+			goto increment_pc;
+
+		softvm_op(storep_w)
+			*(word_t *) vm->r[instr.dst].ptr = *(word_t *) vm->r[instr.src].ptr;
+			goto increment_pc;
+
+		softvm_op(storep_dw)
+			*(doubleword_t *) vm->r[instr.dst].ptr = *(doubleword_t *) vm->r[instr.src].ptr;
+			goto increment_pc;
+
+		softvm_op(storep_qw)
+			*(quadword_t *) vm->r[instr.dst].ptr = *(quadword_t *) vm->r[instr.src].ptr;
+			goto increment_pc;
+
+		softvm_op(storemem)
+			*(byte_t *) vm->r[instr.dst].ptr = *(byte_t *) (vm->ds + instr.imm);
+			goto increment_pc;
+
+		softvm_op(storemem_w)
+			*(word_t *) vm->r[instr.dst].ptr = *(word_t *) (vm->ds + instr.imm);
+			goto increment_pc;
+
+		softvm_op(storemem_dw)
+			*(doubleword_t *) vm->r[instr.dst].ptr = *(doubleword_t *) (vm->ds + instr.imm);
+			goto increment_pc;
+
+		softvm_op(storemem_qw)
+			*(quadword_t *) vm->r[instr.dst].ptr = *(quadword_t *) (vm->ds + instr.imm);
+			goto increment_pc;
+
+		softvm_op(memset)
+			*(byte_t *) (vm->ds + instr.imm) = vm->r[instr.src].b;
+			goto increment_pc;
+
+		softvm_op(memset_w)
+			*(word_t *) (vm->ds + instr.imm) = vm->r[instr.src].w;
+			goto increment_pc;
+
+		softvm_op(memset_dw)
+			*(doubleword_t *) (vm->ds + instr.imm) = vm->r[instr.src].dw;
+			goto increment_pc;
+
+		softvm_op(memset_qw)
+			*(quadword_t *) (vm->ds + instr.imm) = vm->r[instr.src].qw;
+			goto increment_pc;
+
+		softvm_op(memsetp)
+			*(byte_t *) (vm->ds + instr.imm) = *((byte_t *) vm->r[instr.src].ptr);
+			goto increment_pc;
+
+		softvm_op(memsetp_w)
+			*(word_t *) (vm->ds + instr.imm) = *((word_t *) vm->r[instr.src].ptr);
+			goto increment_pc;
+
+		softvm_op(memsetp_dw)
+			*(doubleword_t *) (vm->ds + instr.imm) = *((doubleword_t *) vm->r[instr.src].ptr);
+			goto increment_pc;
+
+		softvm_op(memsetp_qw)
+			*(quadword_t *) (vm->ds + instr.imm) = *((quadword_t *) vm->r[instr.src].ptr);
 			goto increment_pc;
 
 		softvm_op(mov)

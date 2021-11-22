@@ -30,12 +30,19 @@ void soft_test_sval_arithmetic_string (void ** state);
 /**
  * Load instruction tests
  * */
-void soft_vm_test_dload (void ** state);
 void soft_vm_test_loadi_dw (void ** state);
 void soft_vm_test_loadi_qw (void ** state);
 
-void soft_vm_test_dstore (void ** state);
 void soft_vm_test_store_dw (void ** state);
+void soft_vm_test_store_qw (void ** state);
+void soft_vm_test_storep_dw (void ** state);
+void soft_vm_test_storep_qw (void ** state);
+void soft_vm_test_storemem_dw (void ** state);
+void soft_vm_test_storemem_qw (void ** state);
+void soft_vm_test_memset_dw (void ** state);
+void soft_vm_test_memset_qw (void ** state);
+void soft_vm_test_memsetp_dw (void ** state);
+void soft_vm_test_memsetp_qw (void ** state);
 
 void soft_vm_test_movi (void ** state);
 void soft_vm_test_mov (void ** state);

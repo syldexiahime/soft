@@ -11,7 +11,7 @@ void soft_vm_syscall(struct soft_vm * vm, struct soft_instr instr)
 			int    oflags = (int)    vm->r[1].w;
 			mode_t mode   = (mode_t) vm->r[2].w;
 
-			vm->r[instr.dst].w = bitwise_cast(word_t, ssize_t, open(buffer, oflags, mode));
+			vm->r[instr.dst].w = reinterpret_cast(word_t, ssize_t, open(buffer, oflags, mode));
 			break;
 		}
 
@@ -20,7 +20,7 @@ void soft_vm_syscall(struct soft_vm * vm, struct soft_instr instr)
 			void *  buffer = (void *) vm->r[1].dw;
 			size_t  nbytes = (size_t) vm->r[2].w;
 
-			vm->r[instr.dst].w = bitwise_cast(word_t, ssize_t, read(fildes, buffer, nbytes));
+			vm->r[instr.dst].w = reinterpret_cast(word_t, ssize_t, read(fildes, buffer, nbytes));
 			break;
 		}
 
@@ -29,7 +29,7 @@ void soft_vm_syscall(struct soft_vm * vm, struct soft_instr instr)
 			void *  buffer = (void *) vm->r[1].dw;
 			size_t  nbytes = (size_t) vm->r[2].w;
 
-			vm->r[instr.dst].w = bitwise_cast(word_t, ssize_t, write(fildes, buffer, nbytes));
+			vm->r[instr.dst].w = reinterpret_cast(word_t, ssize_t, write(fildes, buffer, nbytes));
 			break;
 		}
 

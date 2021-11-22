@@ -4,11 +4,18 @@
 int main (void)
 {
 	const struct CMUnitTest tests[] = {
-		cmocka_unit_test(soft_vm_test_dload),
 		cmocka_unit_test(soft_vm_test_loadi_dw),
 		cmocka_unit_test(soft_vm_test_loadi_qw),
-		cmocka_unit_test(soft_vm_test_dstore),
 		cmocka_unit_test(soft_vm_test_store_dw),
+		cmocka_unit_test(soft_vm_test_store_qw),
+		cmocka_unit_test(soft_vm_test_storep_dw),
+		cmocka_unit_test(soft_vm_test_storep_qw),
+		cmocka_unit_test(soft_vm_test_storemem_dw),
+		cmocka_unit_test(soft_vm_test_storemem_qw),
+		cmocka_unit_test(soft_vm_test_memset_dw),
+		cmocka_unit_test(soft_vm_test_memset_qw),
+		cmocka_unit_test(soft_vm_test_memsetp_dw),
+		cmocka_unit_test(soft_vm_test_memsetp_qw),
 		cmocka_unit_test(soft_vm_test_movi),
 		cmocka_unit_test(soft_vm_test_mov),
 
